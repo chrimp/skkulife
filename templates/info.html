@@ -30,8 +30,8 @@
                 {% for group in groups %}
                 <div class="group">
                     <span class="groupName">{{ group }}</span>
-                    <button type="button" onclick="location.href='/group-info'">정보</button>
-                    <button type="button" onclick="location.href='/leaveGroup?group={{ group }}'">탈퇴</button>
+                    <button class="reactive-button" type="button" onclick="location.href='/group-info'">정보</button>
+                    <button class="button" type="button" onclick="location.href='/leaveGroup?group={{ group }}'">탈퇴</button>
                 </div>
                 {% endfor %}
             </div>

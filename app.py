@@ -15,7 +15,7 @@ class USER_CREDENTIAL:
 demo_credential = USER_CREDENTIAL("홍길동", "1234", "example1@example.com", ["group1", "group2", "group3"])
 long_credential = USER_CREDENTIAL("aVerySuperDuperLongUsername", "1234", "example2@example.com", ["group1", "group2", "group3", "group4", "group5", "group6", "group7"])
 
-USER_CREDENTIALS = [demo_credential]
+USER_CREDENTIALS = [demo_credential, long_credential]
 
 @app.route('/')
 def login():
@@ -40,8 +40,8 @@ def handle_login():
             session['email'] = user.email
             session['groups'] = user.groups
             return redirect(url_for('info'))
-    
-    return jsonify({"msg": "Bad username or password"}), 401
+
+    return jsonify({"msg": f"Bad username or password: {email, password}"}), 401
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

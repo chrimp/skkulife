@@ -18,13 +18,21 @@
 </div>
 
 <script>
+    //window.onload = function() {
+    //    const userCard = document.querySelector('.user-card');
+    //    userCard.style.transform = 'translateX(100%)';
+    //}
+
     function toggleUserCard() {
         const userCard = document.querySelector('.user-card');
+        
         if (userCard.style.display === 'none' || userCard.style.display === '') {
             userCard.style.display = 'flex';
         } else {
             userCard.style.display = 'none';
         }
+        
+       //userCard.style.transform = 'translateX(0)';
     }
 
     document.addEventListener('click', function(event) {
@@ -33,6 +41,7 @@
 
         if (!userCard.contains(event.target) && !smallUserIcon.contains(event.target)) {
             userCard.style.display = 'none';
+            //userCard.style.transform = 'translateX(100%)';
         }
     });
 </script>

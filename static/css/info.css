@@ -81,7 +81,7 @@ html, body {
     height: 35px;
 }
 
-.group button:hover {
+.group .button:hover {
     background-color: #c90000;
 }
 

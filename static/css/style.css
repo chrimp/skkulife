@@ -197,6 +197,8 @@ button {
     align-items: center;
     transition: color 0.3s ease, background-color 0.3s ease;
     white-space: nowrap;
+    font-weight: 600;
+    font-size: 13px;
 }
 button:disabled {
     background-color: #ccc;

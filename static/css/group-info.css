@@ -47,9 +47,15 @@ button {
     text-align: center;
 }
 .checkbox-container label {
-    margin: 0;
-    padding: 0;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+}
+.checkbox-container input {
+    width: 12px;
+    margin-bottom: 8px;
 }
 
 .timebox {
@@ -105,6 +111,7 @@ button {
 .userbox {
     justify-content: space-between;
     text-align: left;
+    margin-bottom: 10px;
 }
 .userbox span {
     flex: 1;
@@ -113,7 +120,7 @@ button {
 .userbox button {
     flex: 0 0 15%;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 .userbox .kick:hover {
     background-color: #c90000;
