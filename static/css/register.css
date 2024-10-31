@@ -1,0 +1,72 @@
+@media (min-width: 700px) {
+    .container {
+        width: max(30vw, 400px);
+    }
+}
+
+@media (max-width: 699px) {
+    .wrapper {
+        transform: translateY(0);
+    }
+}
+
+.container button {
+    border-radius: 5px;
+}
+.profile-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.profile-image-container .image {
+    width: min(100px, 30%);
+    cursor: pointer;
+}
+
+.email-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.email-container input {
+    flex: 0 0 75%;
+    margin-right: 10px;
+}
+
+.email-container .spacer {
+    flex: 1;
+}
+
+.email-container button {
+    flex: 1 1 20%;
+    align-self: stretch;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+    font-size: 14px;
+}
+
+.checkbox-container input {
+    width: auto;
+    margin-right: 10px;
+    padding: 0;
+}
+
+.checkbox-container label {
+    margin: 0;
+    pointer-events: auto;
+}
+
+.checkbox-container .agreeText {
+    -webkit-user-select: none;
+    user-select: none;
+}

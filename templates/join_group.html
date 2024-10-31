@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/join_group.css">
+    {% include 'user-banner.html' %}
+</head>
+
+<body>
+    <h2 class="banner">SKKULIFE</h2>
+    <div class="wrapper">
+        <div class="container">
+            <form action="/join_group" method=post>
+                <input type="text" placeholder="초대 코드"></input>
+                <button onclick=location.href="join_room">모임 참여하기</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    function checkInput() {
+        const input = document.querySelector('input');
+        const button = document.querySelector('button');
+        if (input.value == '') {
+            button.disabled = true;
+        } else {
+            button.disabled = false;
+        }
+    }
+
+    document.querySelector('input').addEventListener('input', checkInput);
+    checkInput();
+</script>

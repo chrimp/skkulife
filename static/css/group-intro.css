@@ -1,0 +1,23 @@
+.container {
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: none;
+}
+
+button {
+    width: 80%;
+    height: 55px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 15px;
+    background-color: #d1d1d1;
+    box-shadow: 0 0 10px var(--shadow-color);
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+button:hover {
+    background-color: var(--active-button-color);
+}

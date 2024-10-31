@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="/static/css/user-banner.css">
+<div class="user-container">
+    <div class="profile-icon" id="small-user-icon" onclick="toggleUserCard()">{{ session['username'][0].upper() }}</div>
+</div>
+
+<div class="user-card">
+    <div class="user-info">
+        <div class="profile-icon">{{ session['username'][0].upper() }}</div>
+        <div>{{ session['username'] }}</div>
+    </div>
+    <div class="entry" class="logout" onclick="window.location.href='/'">
+        <svg class="icon" class="logout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M10.95 15.84h-11V.17h11v3.88h-1V1.17h-9v13.67h9v-2.83h1v3.83z"/>
+            <path d="M5 8h6v1H5zM11 5.96l4.4 2.54-4.4 2.54V5.96z"/>
+        </svg>
+        <span>로그아웃</span>
+    </div>
+</div>
+
+<script>
+    function toggleUserCard() {
+        const userCard = document.querySelector('.user-card');
+        if (userCard.style.display === 'none' || userCard.style.display === '') {
+            userCard.style.display = 'flex';
+        } else {
+            userCard.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        const userCard = document.querySelector('.user-card');
+        const smallUserIcon = document.getElementById('small-user-icon');
+
+        if (!userCard.contains(event.target) && !smallUserIcon.contains(event.target)) {
+            userCard.style.display = 'none';
+        }
+    });
+</script>

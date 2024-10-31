@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/register.css">
+    <script src="../static/scripts/register.js" defer></script>
+</head>
+<body>
+    <h2 class="banner">SKKULIFE</h2>
+    <div class="wrapper">
+        <div class="container">
+            <h2>회원가입</h2>
+            <form id="register-form" action="/register" method="POST">
+                <div class="profile-image-container">
+                    <img src="../static/images/default-profile-image.svg" alt="프로필 이미지" class="image">
+                    <input type="file" name="profile-image" accept="image/*" style="display: none;">
+                </div>
+                <input type="text" name="username" placeholder="닉네임" required>
+                <div class="email-container">
+                    <input type="text" name="email" placeholder="이메일" required>
+                    <span class="spacer"></span>
+                    <button id="validate" type="button">인증</button>
+                </div>
+                <input type="text" name="code" placeholder="인증 코드" required>
+                <input type="password" name="password" placeholder="비밀번호" required>
+                <input type="password" name="password-confirm" placeholder="비밀번호 확인" required>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="agree">
+                    <label for="agree" onclick="toggleTickBoxWithText()">
+                        <span class="agreeText">벌칙 알림 수신에 동의합니다.</span>
+                    </label>
+                </div>
+                <button id="register-button" type="submit" disabled>회원가입</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

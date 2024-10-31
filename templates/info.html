@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/info.css">
+    {% include 'user-banner.html' %}
+</head>
+<body>
+    <h2 class="banner">SKKULIFE</h2>
+    <div class="wrapper">
+        <div class="container">
+            <span class="title">계정 정보</span>
+            <div class="user-info">
+                <span class="icon" id="user-icon">{{ username[0].upper() }}</span>
+                <span id="user-name">{{ username }}</span>
+            </div>
+            <div class="change-username">
+                <input title="new-username" type="text" id="new-username" value="{{ username }}"></input>
+                <button type="button" onclick="changeUsername()">변경</button>
+            </div>
+            <hr>
+            <span class="subtitle">이메일</span>
+            <span id="user-email">{{ email }}</span>
+            <hr>
+            <span class="subtitle">가입된 모임</span>
+            <div class="group-list">
+                {% for group in groups %}
+                <div class="group">
+                    <span class="groupName">{{ group }}</span>
+                    <button type="button" onclick="location.href='/group-info'">정보</button>
+                    <button type="button" onclick="location.href='/leaveGroup?group={{ group }}'">탈퇴</button>
+                </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <button class="new_group" onclick="location.href='/group-intro'">모임 추가</button>
+        </div>
+
+        <button class="delete-account" onclick="location.href='/deleteAccount'">계정 삭제</button>
+    </div>
+    
+    <script>
+        function toggleNotifications() {
+            const notificationCard = document.getElementById('notification-card');
+            if (notificationCard.style.display === 'none' || notificationCard.style.display === '') {
+                notificationCard.style.display = 'block';
+            } else {
+                notificationCard.style.display = 'none';
+            }
+        }
+
+
+        /*
+        function fetchNotifications() {
+            fecth('/notifications')
+            .then(response => response.json())
+            .then(data => {
+                const notificationCard = document.getElementById('notification-card');
+                notificationCard.innerHTML = '';
+
+                data.forEach(notification => {
+                    const notificationDiv = document.createElement('div');
+                    notificationDiv.classList.add('notification');
+
+                    const dotDiv = document.createElement('div');
+                    dotDiv.classList.add('dot');
+
+                    const msgDiv = document.createElement('div');
+                    msgDiv.textContent = `[${notification.type}] ${notification.msg}`;
+
+                    notificationDiv.appendChild(dotDiv);
+                    notificationDiv.appendChild(msgDiv);
+                    notificationCard.appendChild(notificationDiv);
+                });
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+        }
+
+        //setInterval(fetchNotifications, 5000); // Disabled to save cpu time
+        fetchNotifications();
+        */
+    </script>
+</body>
+</html>

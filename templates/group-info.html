@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Info</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/group-info.css">
+    {% include 'user-banner.html' %}
+</head>
+<body>
+    <h2 class="banner">SKKULIFE</h2>
+    <div class="wrapper">
+        <div class="container">
+            <!-- First Section -->
+            <span class="subtitle">모임 이름</span>
+            <input type="text" value="placeholder" required>
+            <span class="subtitle" value="placeholder">모임 소개문</span>
+            <textarea name="description" required>placeholder</textarea>
+            <div class="flexbox invitecode">
+                <span>placeholder</span>
+                <button onclick="copyToClipboard('Text to Copy')">복사</button>
+            </div>
+            <hr>
+
+            <!-- Second Section -->
+            <span class="subtitle">모임 요일</span>
+            <div class="flexbox checkbox-container">
+                <label><input type="checkbox" name="day" value="monday"> 월요일</label>
+                <label><input type="checkbox" name="day" value="tuesday"> 화요일</label>
+                <label><input type="checkbox" name="day" value="wednesday"> 수요일</label>
+                <label><input type="checkbox" name="day" value="thursday"> 목요일</label>
+                <label><input type="checkbox" name="day" value="friday"> 금요일</label>
+                <label><input type="checkbox" name="day" value="saturday"> 토요일</label>
+                <label><input type="checkbox" name="day" value="sunday"> 일요일</label>
+            </div>
+            <span class="subtitle">모임 시간</span>
+            <div class="flexbox timebox">
+                <input type="time" name="starttime">
+                <span>-</span>
+                <input type="time" name="endtime">
+            </div>
+            <span class="subtitle">투표 마감 시간</span>
+            <div class="flexbox voteend">
+                <span class="one">모임 마감</span>
+                <div class="flexbox voteendtime">
+                    <input type="text" value="placeholder">
+                    <span class="two">이후</span>
+                </div>
+            </div>
+            <span class="subtitle">인증 성공 퍼센트</span>
+            <div class="flexbox percentage">
+                <span class="spacer"></span>
+                <input type="text" value="placeholder">
+                <span class="text">% 이상</span>
+            </div>
+            <span class="subtitle">벌칙 종류</span>
+            <div class="flexbox">
+                <div class="select-wrapper">
+                    <select id="options">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Third Section -->
+            <span class="subtitle">모임 멤버</span>
+            {% for user in group_users %}
+            <div class="flexbox userbox">
+                <span>{{ user }}</span>
+                <button class="reactive-button kick">강퇴</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="button-container">
+            <button class="reactive-button update">수정하기</button>
+            <button class="reactive-button delete">모임 삭제</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+.container {
+    text-align: left;
+    width: max(30vw, 400px);
+}
+@media (max-width: 699px) {
+    .container {
+        width: 80vw;
+    }
+}
+
+button {
+    height: 40px;
+}
+
+.subtitle {
+    margin-bottom: 0;
+}
+
+.flexbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.flexbox span {
+    flex: 1;
+    text-align: left;
+}
+
+.invitecode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.invitecode span {
+    flex: 0 0 80%;
+}
+.invitecode button {
+    flex: 0 0 10%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.checkbox-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.checkbox-container label {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.timebox {
+    justify-content: space-between;
+    text-align: center;
+}
+.timebox span {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.voteend {
+    align-items: center;
+}
+.voteend .one {
+    flex: 1 0 30%;
+}
+.voteend .voteendtime {
+    flex: 0 0 70%;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+.voteendtime input{
+    flex: 0 0 50%;
+    margin-right: 20px;
+}
+.voteendtime span {
+    flex: 0 0 auto;
+    margin-left: 18px;
+    margin-right: 10px;
+    text-align: right;
+}
+
+.percentage {
+    justify-content: flex-end;
+    width: 100%;
+    text-align: right;
+}
+.percentage .spacer {
+    flex: 1;
+}
+.percentage input {
+    flex: 0 0 50%;
+    margin-right: 20px;
+}
+.percentage .text {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+
+.userbox {
+    justify-content: space-between;
+    text-align: left;
+}
+.userbox span {
+    flex: 1;
+    text-align: left;
+}
+.userbox button {
+    flex: 0 0 15%;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.userbox .kick:hover {
+    background-color: #c90000;
+}
+
+.button-container {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    gap: calc((max(30vw, 400px) * 0.3));
+}
+.button-container button {
+    width: calc((max(30vw, 400px) * 0.7) / 2);
+}
+.button-container .update:hover {
+    background-color: #42802D;
+}
+.button-container .delete:hover {
+    background-color: #c90000;
+}
+
+@media (prefers-color-scheme: light) {
+    .button-container button {
+        background-color: #fff;
+    }
+}
+
+@media (max-width: 699px) {
+    .button-container {
+        gap: calc(80vw * 0.3);
+    }
+    .button-container button {
+        width: calc(80vw * 0.7 / 2);
+    }
+    .wrapper {
+        transform: translateY(0);
+    }
+}

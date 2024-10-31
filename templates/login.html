@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1 class="logo">SKKU<br>LIFE</h1>
+            <form action="/login" method="POST">
+                <input type="text" name="email" placeholder="이메일" required>
+                <div class="password-container">
+                    <input type="password" name="password" placeholder="비밀번호" required>
+                    <span class="forgot-password" onclick="window.location.href='/forgot-password'">비밀번호를 잊으셨나요?</span>
+                </div>
+                <button type="submit">로그인</button>
+                <span class="register" onclick="window.location.href='/register'">회원가입</span>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

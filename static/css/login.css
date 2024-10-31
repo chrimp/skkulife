@@ -1,0 +1,46 @@
+html, body {
+    overflow: hidden;
+}
+
+@media (min-width: 700px) {
+    .container {
+        width: 300px;
+    }
+}
+
+.logo {
+    color: #42802D;
+}
+.password-container {
+    position: relative;
+}
+.password-container .forgot-password {
+    color: var(--placeholder-text-color);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+.password-container .forgot-password:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    font-style: italic;
+}
+.container button {
+    border-radius: 5px;
+    background-color: #2c2c2c;
+    color: #fff;
+}
+.container .register {
+    color: var(--darkend-text-color);
+    position: relative;
+    float: right;
+    font-size: 12px;
+}
+.container .register:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
