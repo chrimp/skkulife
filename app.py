@@ -93,6 +93,10 @@ def group_info():
     ]
     return render_template('group-info.html', group_users=group_users)
 
+@app.route('/html/<path:filename>')
+def resolve_html_path(filename):
+    return redirect(f'/{filename}', code=301)
+
 @app.route('/<path:path>')
 def catch_all(path):
     if os.path.exists(os.path.join('templates', f'{path}.html')):
