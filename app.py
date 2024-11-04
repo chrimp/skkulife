@@ -43,8 +43,8 @@ def handle_login():
 
     return jsonify({"msg": f"Bad username or password: {email, password}"}), 401
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
@@ -61,7 +61,7 @@ def register():
         session['groups'] = user_credential.groups
         return redirect(url_for('info'))
     else:
-        return render_template('register.html')
+        return render_template('signup.html')
 
 @app.route('/logout', methods=['POST'])
 def logout():

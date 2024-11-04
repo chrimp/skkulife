@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>signup</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/register.css">
-    <script src="../static/scripts/register.js" defer></script>
+    <link rel="stylesheet" href="../static/css/signup.css">
+    <script src="../static/scripts/signup.js" defer></script>
 </head>
 <body>
     <h2 class="banner">SKKULIFE</h2>
     <div class="wrapper">
         <div class="container">
             <h2>회원가입</h2>
-            <form id="register-form" action="/register" method="POST">
+            <form id="signup-form" action="/signup" method="POST">
                 <div class="profile-image-container">
                     <img src="../static/images/default-profile-image.svg" alt="프로필 이미지" class="image">
                     <input type="file" name="profile-image" accept="image/*" style="display: none;">
@@ -33,7 +33,7 @@
                         <span class="agreeText">벌칙 알림 수신에 동의합니다.</span>
                     </label>
                 </div>
-                <button id="register-button" type="submit" disabled>회원가입</button>
+                <button id="signup-button" type="submit" disabled>회원가입</button>
             </form>
         </div>
     </div>

@@ -4,8 +4,8 @@ function toggleTickBoxWithText() {
 }
 
 function checkValidity() {
-    const form = document.getElementById('register-form');
-    const submitButton = document.getElementById('register-button');
+    const form = document.getElementById('signup-form');
+    const submitButton = document.getElementById('signup-button');
     const requiredInputs = form.querySelectorAll('input[required]');
     let allValid = true;
 
@@ -50,7 +50,7 @@ function initializeProfileUpload() {
     const profileImageContainer = document.querySelector('.profile-image-container');
     const profileImage = profileImageContainer.querySelector('.image');
     const fileInput = profileImageContainer.querySelector('input[type="file"]');
-    const registerForm = document.getElementById('register-form');
+    const signupForm = document.getElementById('signup-form');
 
     profileImage.addEventListener('click', function() {
         fileInput.click();
@@ -65,14 +65,14 @@ function initializeProfileUpload() {
             reader.readAsDataURL(file);
         }
     });
-    registerForm.addEventListener('submit', function(event) {
+    signupForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const formData = new FormData(registerForm);
+        const formData = new FormData(signupForm);
         if (file) {
             formData.append('profile-image', file);
         }
 
-        fetch('/register', {
+        fetch('/signup', {
             method: 'POST', body: formData
         })
         .then(response => response.json())
@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const codeInput = document.querySelector('input[name="code"]');
     codeInput.style.display = 'none';
 
-    // Event listener for enabling/disabling the register button
-    const form = document.getElementById('register-form');
+    // Event listener for enabling/disabling the signup button
+    const form = document.getElementById('signup-form');
     const inputs = form.querySelectorAll('input[required], input[type="checkbox"]');
     inputs.forEach(input => {
         input.addEventListener('input', checkValidity);
