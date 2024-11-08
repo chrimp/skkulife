@@ -33,7 +33,7 @@ def info():
 @app.route('/login', methods=['POST'])
 def handle_login():
     email = request.form.get('email')
-    password = request.form.get('password')
+    password = request.form.get('pwd')
     for user in USER_CREDENTIALS:
         if user.email == email and user.password == password:
             session['username'] = user.username
@@ -43,13 +43,17 @@ def handle_login():
 
     return jsonify({"msg": f"Bad username or password: {email, password}"}), 401
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET'])
+def signup_template():
+    return render_template('signup.html')
+
+@app.route('/auth/signup', methods=['POST'])
 def signup():
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        notification_agree = request.form.get('agree')
+        #notification_agree = request.form.get('agree')
 
         if username in USER_CREDENTIALS:
             return jsonify({"msg": "User already exists"}), 400
@@ -60,8 +64,6 @@ def signup():
         session['email'] = user_credential.email
         session['groups'] = user_credential.groups
         return redirect(url_for('info'))
-    else:
-        return render_template('signup.html')
 
 @app.route('/logout', methods=['POST'])
 def logout():
