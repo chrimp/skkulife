@@ -13,25 +13,25 @@
     <h2 class="banner">SKKULIFE</h2>
     <div class="wrapper">
         <div class="container">
-            <form action="/join_group" method=post>
-                <input type="text" placeholder="초대 코드"></input>
-                <button onclick=location.href="join_room">모임 참여하기</button>
+            <form action="/class/join-class" method="POST">
+                <input type="text" name="classId" placeholder="초대 코드"></input>
+                <button type="submit">모임 참여하기</button>
             </form>
         </div>
     </div>
-</body>
-
-<script>
-    function checkInput() {
-        const input = document.querySelector('input');
-        const button = document.querySelector('button');
-        if (input.value == '') {
-            button.disabled = true;
-        } else {
-            button.disabled = false;
+    <script>
+        function checkInput() {
+            const input = document.querySelector('input');
+            const button = document.querySelector('button');
+            if (input.value == '') {
+                button.disabled = true;
+            } else {
+                button.disabled = false;
+            }
         }
-    }
-
-    document.querySelector('input').addEventListener('input', checkInput);
-    checkInput();
-</script>
+    
+        document.querySelector('input').addEventListener('input', checkInput);
+        checkInput();
+    </script>
+</body>
+</html>

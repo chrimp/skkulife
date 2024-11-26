@@ -21,10 +21,12 @@ function checkValidity() {
         allValid = false;
     }
 
+    /*
     const codeInput = form.querySelector('input[name="code"]');
     if (codeInput.value != "000000") {
         allValid = false;
     }
+    */
 
     submitButton.disabled = !allValid;
 }
@@ -32,7 +34,9 @@ function checkValidity() {
 function validateEmail(email) {
     email = String(email).toLowerCase();
     const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    return email.match(re);
+    const domain = email.split('@')[1];
+    test = email.match(re) && (domain == 'g.skku.edu');
+    return test;
 }
 
 function buttonAction() {
@@ -82,8 +86,8 @@ function initializeProfileUpload() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Hide code input initially
-    const codeInput = document.querySelector('input[name="code"]');
-    codeInput.style.display = 'none';
+    //const codeInput = document.querySelector('input[name="code"]');
+    //codeInput.style.display = 'none';
 
     // Event listener for enabling/disabling the signup button
     const form = document.getElementById('signup-form');
@@ -94,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Event listener for enabling/disabling the validate button
+    /*
     const emailInput = form.querySelector('input[name="email"]');
     const emailButton = document.getElementById('validate');
     emailButton.addEventListener('click', buttonAction);
@@ -105,9 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     emailInput.addEventListener('input', updateValidateButtonState);
+    */
 
     // Initial update
-    updateValidateButtonState();
+    //updateValidateButtonState();
     checkValidity();
 
     // Initialize profile image upload

@@ -14,13 +14,9 @@
         <div class="container">
             <!-- First Section -->
             <span class="subtitle">모임 이름</span>
-            <input type="text" value="placeholder" required>
+            <input class="groupName" type="text" required>
             <span class="subtitle" value="placeholder">모임 소개문</span>
-            <textarea name="description" required>placeholder</textarea>
-            <div class="flexbox invitecode">
-                <span>placeholder</span>
-                <button onclick="copyToClipboard('Text to Copy')">복사</button>
-            </div>
+            <textarea name="description" required></textarea>
             <hr>
 
             <!-- Second Section -->
@@ -54,72 +50,21 @@
                 <input type="text" value="placeholder">
                 <span class="text">% 이상</span>
             </div>
-            <span class="subtitle">벌칙 종류</span>
-            <div class="flexbox">
-                <div class="select-wrapper">
-                    <select id="options">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                    </select>
-                </div>
-            </div>
-            <hr>
-
-            <!-- Third Section -->
-            <span class="subtitle">모임 멤버</span>
-            {% for user in group_users %}
-            <div class="flexbox userbox">
-                <span>{{ user }}</span>
-                <button class="reactive-button kick">강퇴</button>
-            </div>
-            {% endfor %}
         </div>
 
         <div class="button-container">
-            <button class="reactive-button update">수정하기</button>
-            <button class="reactive-button delete">모임 삭제</button>
+            <button class="reactive-button update">모임 생성</button>
         </div>
     </div>
 
     <script>
-        async function fetchGroupInfo() {
-            const response = await fetchWithToken('/class/' + classId);
-            const data = await response.json();
-
-            const fetchedName = data.className;
-            const fetchedDescription = data.classDescription;
-            const fetchedCode = data.classCode;
-            const fetchedImage = data.classImage;
-            const fetchedDate = data.classDate;
-            const fetchedStartTime = data.classStartTime;
-            const fetchedEndTime = data.classEndTime;
-            const fetchedVoteEnd = data.voteEnd;
-            const fetchedVotePercent = data.votePercent;
-            const fetchedMembers = data.classMember;
-
-            document.querySelector('input[type="text"]').value = fetchedName;
-            document.querySelector('textarea').value = fetchedDescription;
-            document.querySelector('.invitecode span').innerText = fetchedCode;
-
-            fetchedDate.foreach(day => {
-                document.querySelector(`input[name="day"][value="${day}"]`).checked = true;
-            });
-
-            document.querySelector('input[name="starttime"]').value = fetchedStartTime;
-            document.querySelector('input[name="endtime"]').value = fetchedEndTime;
-            document.querySelector('.voteendtime input').value = fetchedVoteEnd;
-            document.querySelector('.percentage input').value = fetchedVotePercent;
-        }
-
-        async function postNewGroupInfo() {
+        function postNewGroupInfo() {
             const groupName = document.getElementsByClassName('groupName')[0].value;
             const description = document.getElementsByName('description')[0].value;
-            const classCode = document.querySelector('.invitecode span').innerText;
             
             // Fetch User Info for email
-            const response = await fetchWithToken('/user/info');
-            const data = await response.json();
+            const response = fetchWithToken('/user/info');
+            const data = response.json();
             const email = data.email;
 
             const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => checkbox.value);
@@ -128,6 +73,8 @@
             const endTime = document.getElementsByName('endtime')[0].value;
             const voteEndTime = document.querySelector('.voteendtime input').value;
             const percentage = document.querySelector('.percentage input').value;
+
+            const classCode = ("" + Math.random()).substring(2, 8);
 
             const groupInfo = {
                 "className": groupName,
@@ -145,21 +92,16 @@
 
             const createResponse = fetchWithToken('/class/create-class', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(groupInfo)
             });
 
             if (!createResponse.ok) {
                 console.error('Error creating group', createResponse.status, createResponse.statusText);
-                alert('모임 정보 수정에 실패했습니다. 다시 시도해주세요.');
+                alert('모임 생성에 실패했습니다. 다시 시도해주세요.');
             } else {
-                window.location.reload();
+                window.location.href = '/main'; // !! Add group id
             }
         }
-
-        document.addEventListener('DOMContentLoaded', fetchGroupInfo);
     </script>
 </body>
 </html>

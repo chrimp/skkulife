@@ -11,10 +11,10 @@
     <div class="wrapper">
         <div class="container">
             <h1 class="logo">SKKU<br>LIFE</h1>
-            <form action="/auth/signin" method="POST">
+            <form id="login-form">
                 <input type="text" name="email" placeholder="이메일" required>
                 <div class="password-container">
-                    <input type="password" name="password" placeholder="비밀번호" required>
+                    <input type="password" name="pwd" placeholder="비밀번호" required>
                     <span class="forgot-password" onclick="window.location.href='/forgot-password'">비밀번호를 잊으셨나요?</span>
                 </div>
                 <button type="submit">로그인</button>
@@ -22,5 +22,27 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/auth/signin', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.status === 201) {
+                const data = await response.json();
+                if (data.token === undefined) {
+                    throw new Error('No token in response');
+                }
+                sessionStorage.setItem('token', data.token);
+                window.location.href = '/info';
+            } else {
+                alert('아이디와 비밀번호를 확인해주세요.');
+            }
+        })
+    </script>
 </body>
 </html>

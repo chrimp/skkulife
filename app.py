@@ -1,9 +1,11 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, session
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import os
 from dataclasses import dataclass
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.config['JWT_SECRET_KEY'] = 'SuPeRsEcReTkEy'
+jwt = JWTManager(app)
 
 @dataclass
 class USER_CREDENTIAL:
@@ -11,36 +13,64 @@ class USER_CREDENTIAL:
     password: str
     email: str
     groups: list[str]
+    isVerified: bool
 
-demo_credential = USER_CREDENTIAL("홍길동", "1234", "example1@example.com", ["group1", "group2", "group3"])
-long_credential = USER_CREDENTIAL("aVerySuperDuperLongUsername", "1234", "example2@example.com", ["group1", "group2", "group3", "group4", "group5", "group6", "group7"])
+@dataclass
+class EMAIL_VERIFICATION:
+    email: str
+    code: str
 
-USER_CREDENTIALS = [demo_credential, long_credential]
+demo_credential = USER_CREDENTIAL("홍길동", "1234", "example1@example.com", ["group1", "group2", "group3"], True)
+long_credential = USER_CREDENTIAL("aVerySuperDuperLongUsername", "1234", "example2@example.com", ["group1", "group2", "group3", "group4", "group5", "group6", "group7"], True)
+verification_test_credential_1 = USER_CREDENTIAL("이메일인증테스트1", "1234", "verify@1.com", ["group1", "group2", "group3"], False)
+verification_test_credential_2 = USER_CREDENTIAL("이메일인증테스트2", "1234", "verify@2.com", ["group1", "group2", "group3"], False)
+
+email_verification_tests = [EMAIL_VERIFICATION("verify@1.com", "123456"),
+                            EMAIL_VERIFICATION("verify@2.com", "111111")]
+
+USER_CREDENTIALS = [demo_credential, long_credential, verification_test_credential_1, verification_test_credential_2]
 
 @app.route('/')
 def login():
     return render_template('login.html')
 
+@app.route('/user/info')
+@jwt_required()
+def user_info():
+    return jsonify(get_jwt_identity()), 200
+
 @app.route('/info')
 def info():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    username = session['username']
-    email = session['email']
-    groups = session['groups']
-    return render_template('info.html', username=username, email=email, groups=groups)
+    return render_template('info.html')
 
 @app.route('/login', methods=['POST'])
-def handle_login():
+def do_login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        for user in USER_CREDENTIALS:
+            if user.email == email and user.password == password:
+                session['username'] = user.username
+                session['email'] = user.email
+                session['groups'] = user.groups
+                return redirect(url_for('info'))
+
+        return jsonify({"msg": f"Bad username or password: {email, password}"}), 401
+
+    else:
+        print("Not found credentials")
+        return jsonify({"msg": "Not found"}), 404
+
+@app.route('/auth/signin', methods=['POST'])
+def signin():
     email = request.form.get('email')
     password = request.form.get('pwd')
     for user in USER_CREDENTIALS:
         if user.email == email and user.password == password:
-            session['username'] = user.username
-            session['email'] = user.email
-            session['groups'] = user.groups
-            return redirect(url_for('info'))
+            access_token = create_access_token(identity={'username': user.username, 'email': user.email, 'groups': user.groups})
+            return jsonify(token=access_token), 201
 
+    print(f"Bad username or password: {email, password}")
     return jsonify({"msg": f"Bad username or password: {email, password}"}), 401
 
 @app.route('/signup', methods=['GET'])
@@ -58,12 +88,40 @@ def signup():
         if username in USER_CREDENTIALS:
             return jsonify({"msg": "User already exists"}), 400
 
-        user_credential = USER_CREDENTIAL(username, password, email, [])
+        user_credential = USER_CREDENTIAL(username, password, email, [], False)
         USER_CREDENTIALS.append(user_credential)
         session['username'] = user_credential.username
         session['email'] = user_credential.email
         session['groups'] = user_credential.groups
+        session['isVerified'] = user_credential.isVerified
         return redirect(url_for('info'))
+    
+    else:
+        return jsonify({"msg": "Invalid request"}), 400
+    
+@app.route('/email-verification', methods=['GET'])
+def email_verification():
+    return render_template('email-verification.html')
+
+@app.route('/auth/verify-code', methods=['POST'])
+def verify_code():
+    if request.method == 'POST':
+        code = request.form.get('code')
+        email = session['email']
+
+        for verification in email_verification_tests:
+            if verification.email == email and verification.code == code:
+                for user in USER_CREDENTIALS:
+                    if user.email == email:
+                        user.isVerified = True
+                        session['username'] = user.username
+                        session['email'] = user.email
+                        session['groups'] = user.groups
+                        return redirect(url_for('info'))
+    
+    print("Verification Failed!")
+    print(f"Email: {email}, Code: {code}")
+    return jsonify({"msg": "Invalid code"}), 400
 
 @app.route('/logout', methods=['POST'])
 def logout():

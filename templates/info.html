@@ -6,6 +6,7 @@
     <title>Information</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/info.css">
+    <script src="/html/static/scripts/api.js" defer></script>
     {% include 'user-banner.html' %}
 </head>
 <body>
@@ -14,27 +15,21 @@
         <div class="container">
             <span class="title">계정 정보</span>
             <div class="user-info">
-                <span class="icon" id="user-icon">{{ username[0].upper() }}</span>
-                <span id="user-name">{{ username }}</span>
+                <img class="icon" id="user-icon" alt="User Icon" src="/html/static/images/default-profile-image.svg">
+                <span id="user-name"></span>
             </div>
+            <!--
             <div class="change-username">
                 <input title="new-username" type="text" id="new-username" value="{{ username }}"></input>
                 <button type="button" onclick="changeUsername()">변경</button>
             </div>
+            -->
             <hr>
             <span class="subtitle">이메일</span>
-            <span id="user-email">{{ email }}</span>
+            <span id="user-email"></span>
             <hr>
             <span class="subtitle">가입된 모임</span>
-            <div class="group-list">
-                {% for group in groups %}
-                <div class="group">
-                    <span class="groupName">{{ group }}</span>
-                    <button class="reactive-button" type="button" onclick="location.href='/group-info'">정보</button>
-                    <button class="button" type="button" onclick="location.href='/leaveGroup?group={{ group }}'">탈퇴</button>
-                </div>
-                {% endfor %}
-            </div>
+            <div class="group-list"></div>
             <hr>
             <button class="new_group" onclick="location.href='/group-intro'">모임 추가</button>
         </div>
@@ -43,6 +38,40 @@
     </div>
     
     <script>
+        async function fetchUserInfo() {
+            try {
+                const response = await fetchWithToken('/user/info');
+                const data = await response.json();
+                document.getElementById('user-name').innerText = data.username;
+                document.getElementById('user-email').innerText = data.email;
+
+                // Put image here
+
+                const groupsInfoResponse = await fetch('/class/' + data.email);
+                if (!groupsInfoResponse.ok) {
+                    throw new Error("Error fetching groups info", groupsInfoResponse.status, groupsInfoResponse.statusText);
+                }
+                const groupsInfo = await groupsInfoResponse.json();
+
+                const groupList = document.querySelector('group-list');
+                groupList.innerHTML = '';
+                groupsInfo.forEach(group => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'group';
+                    groupDiv.innerHTML = `
+                        <span class="groupName">${group.className}</span>
+                        <button class="reactive-button" type="button" onclick="location.href='/main'">정보</button>
+                        <button class="button" type="button" onclick="leaveGroup(${group.classId})">탈퇴</button>
+                    `;
+                    groupList.appendChild(groupDiv);
+                });
+            } catch (error) {
+                console.error("Error fetching user info: ", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchUserInfo);
+
         function toggleNotifications() {
             const notificationCard = document.getElementById('notification-card');
             if (notificationCard.style.display === 'none' || notificationCard.style.display === '') {
@@ -52,36 +81,19 @@
             }
         }
 
+        function leaveGroup(classId) {
+            fetch('/class/leave-class', {
+                method: POST,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    "classId": classId
+                }
+            });
 
-        /*
-        function fetchNotifications() {
-            fecth('/notifications')
-            .then(response => response.json())
-            .then(data => {
-                const notificationCard = document.getElementById('notification-card');
-                notificationCard.innerHTML = '';
-
-                data.forEach(notification => {
-                    const notificationDiv = document.createElement('div');
-                    notificationDiv.classList.add('notification');
-
-                    const dotDiv = document.createElement('div');
-                    dotDiv.classList.add('dot');
-
-                    const msgDiv = document.createElement('div');
-                    msgDiv.textContent = `[${notification.type}] ${notification.msg}`;
-
-                    notificationDiv.appendChild(dotDiv);
-                    notificationDiv.appendChild(msgDiv);
-                    notificationCard.appendChild(notificationDiv);
-                });
-            })
-            .catch(error => console.error('Error fetching notifications:', error));
+            fetchUserInfo();
         }
-
-        //setInterval(fetchNotifications, 5000); // Disabled to save cpu time
-        fetchNotifications();
-        */
     </script>
 </body>
 </html>

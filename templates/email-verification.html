@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 인증</title>
+    <link rel="stylesheet" href="/html/static/css/style.css">
+</head>
+<body>
+    <h2 class="banner">SKKULIFE</h2>
+    <div class="wrapper">
+        <div class="container">
+            <span class="subtitle">이메일 인증</span>
+            <form action="/auth/verify-code" method="POST">
+                <input type="text" name="code" placeholder="이메일 인증 코드" required>
+                <button type="submit">인증</button>
+            </form>
+        </div>
+    </div>
+
+    <script>    
+        function checkPOSTable() {
+            const submitButton = document.querySelector('button[type="submit"]');
+            const code = document.querySelector('input[name="code"]').value;
+    
+            if (code === '') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        };
+    
+        document.querySelector('input[name="code"]').addEventListener('input', checkPOSTable);
+        document.addEventListener('DOMContentLoaded', checkPOSTable);
+    </script>
+</body>
+</html>
