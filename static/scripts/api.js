@@ -10,18 +10,14 @@ async function fetchWithToken(input, init={}) {
             ...input,
             headers: new Headers({
                 ...Object.fromEntries(input.headers),
-                //'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k'
                 'Authroization': 'Bearer ' + token
             })
         });
 
-        //authRequest = input.clone();
-        //authRequest.headers.set('Authorization', 'Bearer ' + token);
     } else {
         if (input === 'undefined') { throw new Error('Request url is not defined'); }
         const url = BASEURL + input;
         init.headers = new Headers(init.headers || {});
-        //init.headers.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k');
         init.headers.set('Authorization', 'Bearer ' + token);
         authRequest = new Request(url, init);
     }
