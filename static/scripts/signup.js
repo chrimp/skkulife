@@ -15,18 +15,16 @@ function checkValidity() {
         }
     });
 
-    const password = form.querySelector('input[name="password"]').value;
+    const email = form.querySelector('input[name="email"]').value;
+    if (!validateEmail(email)) {
+        allValid = false;
+    }
+
+    const password = form.querySelector('input[name="pwd"]').value;
     const passwordConfirm = form.querySelector('input[name="password-confirm"]').value;
     if (password !== passwordConfirm) {
         allValid = false;
     }
-
-    /*
-    const codeInput = form.querySelector('input[name="code"]');
-    if (codeInput.value != "000000") {
-        allValid = false;
-    }
-    */
 
     submitButton.disabled = !allValid;
 }
@@ -35,7 +33,7 @@ function validateEmail(email) {
     email = String(email).toLowerCase();
     const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const domain = email.split('@')[1];
-    test = email.match(re) && (domain == 'g.skku.edu');
+    test = email.match(re) || (domain == 'g.skku.edu');
     return test;
 }
 
@@ -56,9 +54,54 @@ function initializeProfileUpload() {
     const fileInput = profileImageContainer.querySelector('input[type="file"]');
     const signupForm = document.getElementById('signup-form');
 
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('사진 파일의 크기는 5MB를 넘을 수 없습니다.');
+                this.value = '';
+                return;
+            }
+
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                let size, sx, sy;
+
+                if (img.width > img.height) {
+                    size = img.height;
+                    sx = (img.width - img.height) / 2;
+                    sy = 0;
+                } else {
+                    size = img.width;
+                    sx = 0;
+                    sy = (img.height - img.width) / 2;
+                }
+
+                canvas.width = size;
+                canvas.height = size;
+                ctx.drawImage(img, sx, sy, size, size, 0, 0, size, size);
+
+                canvas.toBlob(function(blob) {
+                    const croppedFile = new File([blob], file.name, { type: file.type });
+                    const croppedUrl = URL.createObjectURL(croppedFile);
+                    document.querySelector('.image').src = croppedUrl;
+
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(croppedFile);
+                    fileInput.files = dataTransfer.files;
+                }, file.type);
+            };
+            img.src = URL.createObjectURL(file);
+        }
+    });
+
     profileImage.addEventListener('click', function() {
         fileInput.click();
     });
+    /*
     fileInput.addEventListener('change', function() {
         const file = fileInput.files[0];
         if (file) {
@@ -69,19 +112,7 @@ function initializeProfileUpload() {
             reader.readAsDataURL(file);
         }
     });
-    signupForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formData = new FormData(signupForm);
-        if (file) {
-            formData.append('profile-image', file);
-        }
-
-        fetch('/signup', {
-            method: 'POST', body: formData
-        })
-        .then(response => response.json())
-        .catch(error => console.error('Error:', error))
-    });
+    */
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -114,8 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial update
     //updateValidateButtonState();
-    checkValidity();
 
-    // Initialize profile image upload
+    checkValidity();
     initializeProfileUpload();
 });

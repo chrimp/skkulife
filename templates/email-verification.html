@@ -12,14 +12,14 @@
     <div class="wrapper">
         <div class="container">
             <span class="subtitle">이메일 인증</span>
-            <form action="/auth/verify-code" method="POST">
+            <form id="verification-form">
                 <input type="text" name="code" placeholder="이메일 인증 코드" required>
                 <button type="submit">인증</button>
             </form>
         </div>
     </div>
 
-    <script>    
+    <script>
         function checkPOSTable() {
             const submitButton = document.querySelector('button[type="submit"]');
             const code = document.querySelector('input[name="code"]').value;
@@ -33,6 +33,32 @@
     
         document.querySelector('input[name="code"]').addEventListener('input', checkPOSTable);
         document.addEventListener('DOMContentLoaded', checkPOSTable);
+
+        document.getElementById('verification-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+            try {
+                const response = await fetchWithToken('/auth/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                if (response.ok) {
+                    window.location.href = '/info';
+                } else {
+                    alert('인증 코드가 올바르지 않습니다.');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+            }
+        });
     </script>
 </body>
 </html>

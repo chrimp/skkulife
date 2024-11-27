@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
-    <link rel="stylesheet" href="/html/static/css/login.css">
+    <link rel="stylesheet" href="/html/static/css/signin.css">
     <script src="/html/static/scripts/api.js" defer></script>
 </head>
 <body>
@@ -28,9 +28,18 @@
         document.getElementById('login-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
+            const jsonData = {};
+
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
             const response = await fetch('https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev/auth/signin', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
             });
 
             if (response.ok) {
@@ -41,6 +50,10 @@
                 sessionStorage.setItem('token', data.token);
                 window.location.href = '/info';
             } else {
+                if (response.statusText === 'Account not verified') {
+                    alert('이메일 인증을 완료해주세요.');
+                    window.location.href = '/email-verification';
+                }
                 alert('아이디와 비밀번호를 확인해주세요.');
             }
         })

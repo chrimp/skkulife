@@ -10,7 +10,8 @@ async function fetchWithToken(input, init={}) {
             ...input,
             headers: new Headers({
                 ...Object.fromEntries(input.headers),
-                'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k'
+                //'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k'
+                'Authroization': 'Bearer ' + token
             })
         });
 
@@ -20,14 +21,30 @@ async function fetchWithToken(input, init={}) {
         if (input === 'undefined') { throw new Error('Request url is not defined'); }
         const url = BASEURL + input;
         init.headers = new Headers(init.headers || {});
-        init.headers.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k');
+        //init.headers.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaGxla2RsZjEyMzRAZ21haWwuY29tIiwiaWF0IjoxNzMyNjA1OTU5LCJleHAiOjE3NjQxNDE5NTl9.86LBbz7DGZGGlLrJVwNwZmroV6XB_m-BqkPtcbm_z8k');
+        init.headers.set('Authorization', 'Bearer ' + token);
         authRequest = new Request(url, init);
     }
 
     const response = await fetch(authRequest);
     if (!response.ok) {
+        const data = await response.json();
+        if (response.status == 401) {
+            if (data.message == "Unauthorized") {
+                window.location.href = '/signin';
+                return null;
+            } else if (data.message == "Account not verified") {
+                window.location.href = '/email-verification';
+                return null;
+            }
+        }
+
         if (response.statusText == "Unauthorized") {
             window.location.href = '/signin';
+            return null;
+        } else if (response.statusText == "Account not verified") {
+            window.location.href = '/email-verification';
+            return null;
         }
 
         console.error("Error while fetching api: " + response.status + " " + response.statusText);

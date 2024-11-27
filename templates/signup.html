@@ -6,6 +6,7 @@
     <title>signup</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/signup.css">
+    <script src="/html/static/scripts/imageCropper.js"></script>
     <script src="/html/static/scripts/signup.js" defer></script>
 </head>
 <body>
@@ -15,10 +16,11 @@
             <h2>회원가입</h2>
             <form id="signup-form" action="https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev/auth/signup" method="POST">
                 <div class="profile-image-container">
-                    <img src="/html/static/images/default-profile-image.svg" alt="프로필 이미지" class="image">
-                    <input type="file" name="profile-image" accept="image/jpeg, image/png, image/jpg" style="display: none;">
+                    <img src="/html/static/images/default-profile-image.svg" id="profile-image" alt="프로필 이미지" class="image">
+                    <input type="file" name="profile" accept="image/jpeg, image/png, image/jpg" style="display: none;">
                 </div>
                 <input type="text" name="name" placeholder="이름" required>
+                <input type="text" name="studentId" placeholder="학번" required>
                 <!--
                 <div class="email-container">
                     <input type="text" name="email" placeholder="이메일" required>
@@ -42,27 +44,30 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const form = document.getElementById('signup-form');
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            formData.delete('password-confirm');
+    
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+            
+            if (response.ok) {
+                const data = await response.json();
+                sessionStorage.setItem('token', data.token);
+                window.location.href = '/info';
+            } else {
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        });
+
+        const fileInput = document.querySelector('input[type="file"]');
+        cropIfNotSquare(fileInput);
+    </script>
 </body>
 </html>
-
-<script>
-    const form = document.getElementById('signup-form');
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        const formData = new FormData(form);
-        formData.delete('password-confirm');
-
-        const response = await fetch(form.action, {
-            method: form.method,
-            body: formData
-        })
-        
-        if (response.ok) {
-            const data = await response.json();
-            sessionStorage.setItem('token', data.token);
-            window.location.href = '/info';
-        } else {
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
-        }
-    });
-</script>

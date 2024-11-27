@@ -6,7 +6,8 @@
     <title>Create Group</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/group-info.css">
-    <script src="/html/static/scripts/api.js" defer></script>
+    <script src="/html/static/scripts/imageCropper.js"></script>
+    <script src="/html/static/scripts/api.js"></script>
     {% include 'user-banner.html' %}
 </head>
 <body>
@@ -14,13 +15,13 @@
     <div class="wrapper">
         <div class="container">
             <div class="group-image-container">
-                <img src="/html/static/images/default-group-image.svg" alt="모임 이미지" class="image">
+                <img src="/html/static/images/default-group-image.svg" id="profile-image" alt="모임 이미지" class="image">
                 <input type="file" name="group-image" accept="image/jpeg, image/png, image/jpg" style="display: none;">
             </div>
             <!-- First Section -->
             <span class="subtitle">모임 이름</span>
             <input class="groupName" type="text" required>
-            <span class="subtitle" value="placeholder">모임 소개문</span>
+            <span class="subtitle" value="">모임 소개문</span>
             <textarea name="description" required></textarea>
             <hr>
 
@@ -45,14 +46,14 @@
             <div class="flexbox voteend">
                 <span class="one">모임 마감</span>
                 <div class="flexbox voteendtime">
-                    <input type="text" value="placeholder">
-                    <span class="two">이후</span>
+                    <input type="text" value="">
+                    <span class="two">분 후</span>
                 </div>
             </div>
             <span class="subtitle">인증 성공 퍼센트</span>
             <div class="flexbox percentage">
                 <span class="spacer"></span>
-                <input type="text" value="placeholder">
+                <input type="text" value="">
                 <span class="text">% 이상</span>
             </div>
         </div>
@@ -63,17 +64,25 @@
     </div>
 
     <script>
-        function postNewGroupInfo() {
+        async function postNewGroupInfo() {
             const groupName = document.getElementsByClassName('groupName')[0].value;
             const description = document.getElementsByName('description')[0].value;
-            const groupImage = document.getElementsByName('group-image')[0].value;
+            const groupImage = document.getElementsByName('group-image')[0].files[0];
             
             // Fetch User Info for email
-            const response = fetchWithToken('/user/info');
-            const data = response.json();
+            const response = await fetchWithToken('/user/info');
+            const data = await response.json();
             const email = data.email;
 
-            const dayMap = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            const dayMap = {
+                monday: 0,
+                tuesday: 1,
+                wednesday: 2,
+                thursday: 3,
+                friday: 4,
+                saturday: 5,
+                sunday: 6
+            };
             const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value]);
 
             const startTime = document.getElementsByName('starttime')[0].value;
@@ -81,7 +90,7 @@
             const voteEndTime = document.querySelector('.voteendtime input').value;
             const percentage = document.querySelector('.percentage input').value;
 
-            const classCode = ("" + Math.random()).substring(2, 8);
+            const classCode = ("" + Math.random()).substring(2, 7);
 
             const formData = new FormData();
             formData.append('className', groupName);
@@ -111,6 +120,24 @@
                 window.location.href = '/main'; // !! Add group id
             }
         }
+    
+        const image = document.getElementById('profile-image');
+        const fileInput = document.querySelector('input[type="file"]');
+
+        image.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        cropIfNotSquare(fileInput);
+
+        const percentageInput = document.querySelector('.percentage input');
+        percentageInput.addEventListener('input', () => {
+            if (percentageInput.value > 100) {
+                percentageInput.value = 100;
+            } else if (percentageInput.value <= 0) {
+                percentageInput.value = 1;
+            }
+        });
     </script>
 </body>
 </html>

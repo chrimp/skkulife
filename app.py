@@ -34,8 +34,7 @@ USER_CREDENTIALS = [demo_credential, long_credential, verification_test_credenti
 
 @app.route('/')
 def login():
-
-    return render_template('login.html')
+    return render_template('signin.html')
 
 @app.route('/user/info')
 @jwt_required()

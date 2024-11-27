@@ -6,7 +6,7 @@
     <title>signup</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/join_group.css">
-    <script src="/html/static/scripts/api.js" defer></script>
+    <script src="/html/static/scripts/api.js"></script>
     {% include 'user-banner.html' %}
 </head>
 
@@ -14,7 +14,7 @@
     <h2 class="banner">SKKULIFE</h2>
     <div class="wrapper">
         <div class="container">
-            <form action="/class/join-class" method="POST">
+            <form id="join-group-form">
                 <input type="text" name="classId" placeholder="초대 코드"></input>
                 <button type="submit">모임 참여하기</button>
             </form>
@@ -33,6 +33,30 @@
     
         document.querySelector('input').addEventListener('input', checkInput);
         checkInput();
+
+        document.getElementById('join-group-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const jsonData = {};
+
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            const response = await fetchWithToken('/group/join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            if (response.ok) {
+                window.location.href = '/info';
+            } else {
+                alert('초대 코드가 올바르지 않습니다.');
+            }
+        })
     </script>
 </body>
 </html>

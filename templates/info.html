@@ -6,7 +6,7 @@
     <title>Information</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/info.css">
-    <script src="/html/static/scripts/api.js" defer></script>
+    <script src="/html/static/scripts/api.js"></script>
     {% include 'user-banner.html' %}
 </head>
 <body>
@@ -45,37 +45,6 @@
                 document.getElementById('user-name').innerText = data.userName;
                 document.getElementById('user-email').innerText = data.email;
                 document.getElementById('user-icon').src = data.userImage;
-                
-                /*
-                const imageByteString = data.userImage;
-                const binaryString = new Uint8Array(imageByteString.length);
-                for (let i = 0; i < imageByteString.length; i++) {
-                    binaryString[i] = imageByteString.charCodeAt(i);
-                }
-                const blob = new Blob([binaryString], { type: 'image/*' });
-                const imageUrl = URL.createObjectURL(blob);
-                const userIcon = document.getElementById('user-icon');
-                userIcon.src = imageUrl;
-
-                const groupsInfoResponse = await fetch('/class/' + data.email);
-                if (!groupsInfoResponse.ok) {
-                    throw new Error("Error fetching groups info", groupsInfoResponse.status, groupsInfoResponse.statusText);
-                }
-                const groupsInfo = await groupsInfoResponse.json();
-
-                const groupList = document.querySelector('group-list');
-                groupList.innerHTML = '';
-                groupsInfo.forEach(group => {
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = 'group';
-                    groupDiv.innerHTML = `
-                        <span class="groupName">${group.className}</span>
-                        <button class="reactive-button" type="button" onclick="location.href='/main'">정보</button>
-                        <button class="button" type="button" onclick="leaveGroup(${group.classId})">탈퇴</button>
-                    `;
-                    groupList.appendChild(groupDiv);
-                });
-                */
 
                 const groupList = data.userClass;
                 const groupListContainer = document.querySelector('.group-list');
@@ -85,10 +54,16 @@
                     groupDiv.className = 'group';
                     groupDiv.innerHTML = `
                         <span class="groupName">${group.className}</span>
-                        <button class="reactive-button" type="button" onclick="setCurrentGroup(${group.classId})">정보</button>
-                        <button class="button" type="button" onclick="leaveGroup(${group.classId})">탈퇴</button>
+                        <button class="reactive-button" type="button">정보</button>
+                        <button class="button" type="button">탈퇴</button>
                     `;
                     groupListContainer.appendChild(groupDiv);
+
+                    const infoButton = groupDiv.querySelector('.reactive-button');
+                    const leaveButton = groupDiv.querySelector('.button');
+
+                    infoButton.addEventListener('click', () => setCurrentGroup(group.classId));
+                    leaveButton.addEventListener('click', () => leaveGroup(group.classId));
                 });
 
             } catch (error) {
@@ -108,14 +83,14 @@
         }
 
         function leaveGroup(classId) {
-            fetch('/class/leave-class', {
-                method: POST,
+            fetchWithToken('/class/leave-class', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: {
+                body: JSON.stringify({
                     "classId": classId
-                }
+                })
             });
 
             fetchUserInfo();

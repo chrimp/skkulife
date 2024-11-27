@@ -1,12 +1,14 @@
 <link rel="stylesheet" href="/static/css/user-banner.css">
 <div class="user-container">
-    <div class="profile-icon" id="small-user-icon" onclick="toggleUserCard()">placeholder</div>
+    <img class="profile-icon" id="small-user-icon" alt="User Icon" src="/static/images/default-profile-image.svg" onclick="toggleUserCard()">
+    <!--<div class="profile-icon" id="small-user-icon" onclick="toggleUserCard()"></div>-->
 </div>
 
 <div class="user-card">
     <div class="user-info">
-        <div class="profile-icon">placeholder</div>
-        <div>placeholder</div>
+        <img class="profile-icon" id="card-user-icon" alt="User Icon" src="/static/images/default-profile-image.svg">
+        <!--<div class="profile-icon"></div>-->
+        <div></div>
     </div>
     <div class="entry" class="logout" onclick="window.location.href='/'">
         <svg class="icon" class="logout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -18,11 +20,6 @@
 </div>
 
 <script>
-    //window.onload = function() {
-    //    const userCard = document.querySelector('.user-card');
-    //    userCard.style.transform = 'translateX(100%)';
-    //}
-
     function toggleUserCard() {
         const userCard = document.querySelector('.user-card');
         
@@ -31,8 +28,6 @@
         } else {
             userCard.style.display = 'none';
         }
-        
-       //userCard.style.transform = 'translateX(0)';
     }
 
     document.addEventListener('click', function(event) {
@@ -41,7 +36,19 @@
 
         if (!userCard.contains(event.target) && !smallUserIcon.contains(event.target)) {
             userCard.style.display = 'none';
-            //userCard.style.transform = 'translateX(100%)';
         }
     });
+
+    async function fetchUserInfo() {
+        try {
+            const response = await fetchWithToken('/user/info');
+            const data = await response.json();
+            document.getElementById('small-user-icon').src = data.userImage;
+            document.getElementById('card-user-icon').src = data.userImage;
+            document.querySelector('.user-info div').innerText = data.userName;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    fetchUserInfo();
 </script>
