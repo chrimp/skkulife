@@ -25,7 +25,6 @@ async function fetchWithToken(input, init={}) {
         init.headers.set('Authorization', 'Bearer ' + token);
         authRequest = new Request(url, init);
     }
-
     const response = await fetch(authRequest);
     if (!response.ok) {
         const data = await response.json();

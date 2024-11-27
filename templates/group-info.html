@@ -81,7 +81,7 @@
 
         <div class="button-container">
             <button class="reactive-button update" onclick="postNewGroupInfo()">수정하기</button>
-            <button class="reactive-button delete">모임 삭제</button>
+            <button class="reactive-button delete" onclick="deleteGroup()">모임 삭제</button>
         </div>
     </div>
 
@@ -99,7 +99,7 @@
             const fetchedName = data.className;
             const fetchedDescription = data.classDescription;
             const fetchedCode = data.classCode;
-            const fetchedImage = data.classImage;
+            const fetchedImageUrl = data.classImage;
             const fetchedDate = data.classDate;
             const fetchedStartTime = data.classStartTime;
             const fetchedEndTime = data.classEndTime;
@@ -107,7 +107,21 @@
             const fetchedVotePercent = data.votePercent;
             const fetchedMembers = data.classMember;
 
-            document.getElementById('class-image').src = fetchedImage;
+            fetch(fetchedImageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const fileName = fetchedImageUrl.split('/').pop();
+                const file = new File([blob], fileName, { type: blob.type });
+                document.getElementById('class-image').src = URL.createObjectURL(file);
+                
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.querySelector('input[type="file"]').files = dataTransfer.files;
+            })
+            .catch(error => {
+                console.error('Error fetching image', error);
+            });
+            
             document.querySelector('input[type="text"]').value = fetchedName;
             document.querySelector('textarea').value = fetchedDescription;
             document.querySelector('.invitecode span').innerText = fetchedCode;
@@ -130,7 +144,13 @@
                 userDiv.className = 'flexbox userbox';
                 userDiv.innerHTML = `
                     <span>${user.userName}</span>
-                    <button class="reactive-button kick" style="display: none;">강퇴</button>
+                    <button class="reactive-button kick" style="
+                    background-color: var(--container-background-color);
+                    color: transparent;
+                    box-shadow: none;
+                    border: none;
+                    cursor: default;
+                    ">강퇴</button>
                 `;
                 groupMembersContainer.appendChild(userDiv);
             });
@@ -158,7 +178,7 @@
                 saturday: 5,
                 sunday: 6
             };
-            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value]);
+            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value],toString());
 
             const startTime = document.getElementsByName('starttime')[0].value;
             const endTime = document.getElementsByName('endtime')[0].value;
@@ -166,23 +186,25 @@
             const percentage = document.querySelector('.percentage input').value;
 
             const formData = new FormData();
+            formData.append('classId', sessionStorage.getItem('currentGroup'));
             formData.append('className', groupName);
             formData.append('manager', email);
             formData.append('classDescription', description);
             formData.append('classImage', groupImage);
             formData.append('classCode', classCode);
-            formData.append('classDate', days);
+            
+            days.forEach(day => {
+                formData.append('classDate', day);
+            });
+
             formData.append('classStartTime', startTime);
             formData.append('classEndTime', endTime);
             formData.append('voteEnd', voteEndTime);
             formData.append('votePercent', percentage);
             formData.append('penaltyType', 1);
 
-            const createResponse = fetchWithToken('/class/create-class', {
+            const createResponse = await fetchWithToken('/class/update-class', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
                 body: formData
             });
 
@@ -228,6 +250,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', fetchGroupInfo);
+
+        const image = document.getElementById('class-image');
+        image.addEventListener('click', () => {
+            const fileInput = document.querySelector('input[type="file"]');
+            fileInput.click();
+        });
+
         const fileInput = document.querySelector('input[type="file"]');
         cropIfNotSquare(fileInput);
 
@@ -239,6 +268,20 @@
                 percentageInput.value = 0;
             }
         });
+
+        async function deleteGroup() {
+            const classId = sessionStorage.getItem('currentGroup');
+            const body = {
+                "classId": classId
+            };
+            const deleteResponse = await fetchWithToken('/class/delete-class', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+        }
     </script>
 </body>
 </html>

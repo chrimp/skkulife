@@ -57,6 +57,13 @@
                 alert('아이디와 비밀번호를 확인해주세요.');
             }
         })
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = sessionStorage.getItem('token');
+            if (token !== null) {
+                window.location.href = '/info';
+            }
+        });
     </script>
 </body>
 </html>

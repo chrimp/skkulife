@@ -98,7 +98,11 @@
             formData.append('classDescription', description);
             formData.append('classImage', groupImage);
             formData.append('classCode', classCode);
-            formData.append('classDate', JSON.stringify(days));
+            
+            days.forEach(day => {
+                formData.append('classDate', day);
+            });
+            
             formData.append('classStartTime', startTime);
             formData.append('classEndTime', endTime);
             formData.append('voteEnd', voteEndTime);
@@ -107,9 +111,6 @@
 
             const createResponse = await fetchWithToken('/class/create-class', {
                 method: 'POST',
-                header: {
-                    'Content-Type': 'multipart/form-data'
-                },
                 body: formData
             });
 
@@ -120,7 +121,7 @@
                 const groupData = await createResponse.json();
                 const classId = groupData.classId;
                 sessionStorage.setItem('currentGroup', classId);
-                window.location.href = '/main'; // !! Add group id
+                window.location.href = '/main';
             }
         }
     

@@ -10,8 +10,8 @@
         <!--<div class="profile-icon"></div>-->
         <div></div>
     </div>
-    <div class="entry" class="logout" onclick="window.location.href='/'">
-        <svg class="icon" class="logout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <div class="entry logout" onclick="window.location.href='/'">
+        <svg class="icon logout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <path d="M10.95 15.84h-11V.17h11v3.88h-1V1.17h-9v13.67h9v-2.83h1v3.83z"/>
             <path d="M5 8h6v1H5zM11 5.96l4.4 2.54-4.4 2.54V5.96z"/>
         </svg>
@@ -20,6 +20,11 @@
 </div>
 
 <script>
+    document.getElementsByClassName('logout')[0].addEventListener('click', function() {
+        sessionStorage.removeItem('token');
+        window.location.href = '/';
+    });
+
     function toggleUserCard() {
         const userCard = document.querySelector('.user-card');
         

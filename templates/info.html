@@ -34,7 +34,7 @@
             <button class="new_group" onclick="location.href='/group-intro'">모임 추가</button>
         </div>
 
-        <button class="delete-account" onclick="location.href='/deleteAccount'">계정 삭제</button>
+        <!--<button class="delete-account" onclick="location.href='/deleteAccount'">계정 삭제</button>-->
     </div>
     
     <script>
@@ -57,6 +57,11 @@
                         <button class="reactive-button" type="button">정보</button>
                         <button class="button" type="button">탈퇴</button>
                     `;
+
+                    if (data.email == group.manager) {
+                        groupDiv.querySelector('.button').style.display = 'none';
+                        groupDiv.querySelector('.button').disabled = true;
+                    }
                     groupListContainer.appendChild(groupDiv);
 
                     const infoButton = groupDiv.querySelector('.reactive-button');

@@ -36,6 +36,10 @@ USER_CREDENTIALS = [demo_credential, long_credential, verification_test_credenti
 def login():
     return render_template('signin.html')
 
+@app.route('/main')
+def group_main():
+    return redirect(url_for('group_info'))
+
 @app.route('/user/info')
 @jwt_required()
 def user_info():
@@ -146,14 +150,7 @@ def render_template_file(filename):
 
 @app.route('/group-info')
 def group_info():
-    group_users = [
-        "User 1",
-        "User 2",
-        "User 3",
-        "User 4",
-        "User 5"
-    ]
-    return render_template('group-info.html', group_users=group_users)
+    return render_template('group-info.html')
 
 @app.route('/html/<path:filename>')
 def resolve_html_path(filename):
