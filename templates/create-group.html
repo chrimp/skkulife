@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Info</title>
+    <title>Create Group</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/group-info.css">
     <script src="/html/static/scripts/api.js" defer></script>
@@ -73,7 +73,8 @@
             const data = response.json();
             const email = data.email;
 
-            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => checkbox.value);
+            const dayMap = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value]);
 
             const startTime = document.getElementsByName('starttime')[0].value;
             const endTime = document.getElementsByName('endtime')[0].value;

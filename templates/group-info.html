@@ -15,7 +15,7 @@
         <div class="container">
             <!-- First Section -->
             <div class="group-image-container">
-                <img src="/html/static/images/default-group-image.svg" alt="모임 이미지" class="image">
+                <img src="/html/static/images/default-group-image.svg" id="class-image" alt="모임 이미지" class="image">
                 <input type="file" name="group-image" accept="image/jpeg, image/png, image/jpg" style="display: none;">
             </div>
             <span class="subtitle">모임 이름</span>
@@ -23,8 +23,8 @@
             <span class="subtitle" value="placeholder">모임 소개문</span>
             <textarea name="description" required>placeholder</textarea>
             <div class="flexbox invitecode">
-                <span>placeholder</span>
-                <button onclick="copyToClipboard('Text to Copy')">복사</button>
+                <span></span>
+                <button onclick="copyToClipboard()">복사</button>
             </div>
             <hr>
 
@@ -50,7 +50,7 @@
                 <span class="one">모임 마감</span>
                 <div class="flexbox voteendtime">
                     <input type="text" value="placeholder">
-                    <span class="two">이후</span>
+                    <span class="two">분 후</span>
                 </div>
             </div>
             <span class="subtitle">인증 성공 퍼센트</span>
@@ -59,6 +59,7 @@
                 <input type="text" value="placeholder">
                 <span class="text">% 이상</span>
             </div>
+            <!--
             <span class="subtitle">벌칙 종류</span>
             <div class="flexbox">
                 <div class="select-wrapper">
@@ -69,6 +70,7 @@
                     </select>
                 </div>
             </div>
+            -->
             <hr>
 
             <!-- Third Section -->
@@ -85,8 +87,13 @@
 
     <script>
         async function fetchGroupInfo() {
+            var classId = sessionStorage.getItem('currentGroup');
+            if (classId === null) {
+                classId = '5a5bbe7d-2744-439b-86d2-e380342d6c91';
+            }
             const response = await fetchWithToken('/class/' + classId);
-            const data = await response.json();
+            const dataArr = await response.json();
+            const data = dataArr[0];
 
             const fetchedName = data.className;
             const fetchedDescription = data.classDescription;
@@ -99,12 +106,15 @@
             const fetchedVotePercent = data.votePercent;
             const fetchedMembers = data.classMember;
 
+            document.getElementById('class-image').src = fetchedImage;
             document.querySelector('input[type="text"]').value = fetchedName;
             document.querySelector('textarea').value = fetchedDescription;
             document.querySelector('.invitecode span').innerText = fetchedCode;
 
-            fetchedDate.foreach(day => {
-                document.querySelector(`input[name="day"][value="${day}"]`).checked = true;
+            const dayMap = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            fetchedDate.forEach(day => {
+                const dayName = dayMap[day];
+                document.querySelector(`input[name="day"][value="${dayName}"]`).checked = true;
             });
 
             document.querySelector('input[name="starttime"]').value = fetchedStartTime;
@@ -118,11 +128,13 @@
                 const userDiv = document.createElement('div');
                 userDiv.className = 'flexbox userbox';
                 userDiv.innerHTML = `
-                    <span>${user}</span>
+                    <span>${user.userName}</span>
                     <button class="reactive-button kick" style="display: none;">강퇴</button>
                 `;
                 groupMembersContainer.appendChild(userDiv);
             });
+
+            await disableInputsIfNotManager(data);
         }
 
         async function postNewGroupInfo() {
@@ -172,8 +184,9 @@
         }
 
         function copyToClipboard() {
-            const inviteCode = document.getElementById('invite-code').innerText;
-            navigator.clipboard.writeText(inviteCode).then(() => {
+            const inviteCodeClass = document.getElementsByClassName('invitecode')[0];
+            const inviteSpan = inviteCodeClass.querySelector('span').innerText;
+            navigator.clipboard.writeText(inviteSpan).then(() => {
                 alert('초대 코드가 복사되었습니다.');
             }
             ).catch(err => {
@@ -181,13 +194,10 @@
             });
         }
 
-        function disableInputsIfNotManager() {
-            const currentGroupId = sessionStorage.getItem('currentClassId');
-            const response = fetchWithToken('/class/' + currentGroupId);
-            const data = response.json();
-
-            const userResponse = fetchWithToken('/user/info');
-            const userEmail = userResponse.json().email;
+        async function disableInputsIfNotManager(data) {
+            const userResponse = await fetchWithToken('/user/info');
+            const userInfo = await userResponse.json();
+            const userEmail = userInfo.email;
 
             if (data.manager != userEmail) {
                 const inputs = document.querySelectorAll('input, textarea, select');
@@ -195,10 +205,14 @@
                     input.disabled = true;
                 });
 
-                const buttons = document.querySelectorAll('button');
+                const buttonContainer = document.getElementsByClassName('button-container')[0];
+                const buttons = buttonContainer.querySelectorAll('button');
                 buttons.forEach(button => {
+                    button.disabled = true;
                     button.style.display = 'none';
                 });
+
+                document.getElementById('class-image').style.cursor = 'default';
             }
         }
 
