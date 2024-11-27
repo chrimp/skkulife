@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, session
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS
 import os
 from dataclasses import dataclass
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'SuPeRsEcReTkEy'
 jwt = JWTManager(app)
+CORS(app)
 
 @dataclass
 class USER_CREDENTIAL:
@@ -32,6 +34,7 @@ USER_CREDENTIALS = [demo_credential, long_credential, verification_test_credenti
 
 @app.route('/')
 def login():
+
     return render_template('login.html')
 
 @app.route('/user/info')
@@ -160,8 +163,6 @@ def resolve_html_path(filename):
 @app.route('/<path:path>')
 def catch_all(path):
     if os.path.exists(os.path.join('templates', f'{path}.html')):
-        if 'username' not in session:
-            return redirect(url_for('login'))
         return render_template(f'{path}.html')
     else:
         return jsonify({"msg": "Not found"}), 404

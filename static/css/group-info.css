@@ -8,6 +8,18 @@
     }
 }
 
+.group-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.group-image-container .image {
+    width: min(100px, 30%);
+    cursor: pointer;
+}
+
 button {
     height: 40px;
 }

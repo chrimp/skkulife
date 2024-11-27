@@ -6,6 +6,7 @@
     <title>Group Info</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/group-info.css">
+    <script src="/html/static/scripts/api.js" defer></script>
     {% include 'user-banner.html' %}
 </head>
 <body>
@@ -13,6 +14,10 @@
     <div class="wrapper">
         <div class="container">
             <!-- First Section -->
+            <div class="group-image-container">
+                <img src="/html/static/images/default-group-image.svg" alt="모임 이미지" class="image">
+                <input type="file" name="group-image" accept="image/jpeg, image/png, image/jpg" style="display: none;">
+            </div>
             <span class="subtitle">모임 이름</span>
             <input type="text" value="placeholder" required>
             <span class="subtitle" value="placeholder">모임 소개문</span>
@@ -68,16 +73,12 @@
 
             <!-- Third Section -->
             <span class="subtitle">모임 멤버</span>
-            {% for user in group_users %}
-            <div class="flexbox userbox">
-                <span>{{ user }}</span>
-                <button class="reactive-button kick">강퇴</button>
+            <div id="group-members" class="flexbox userbox">
             </div>
-            {% endfor %}
         </div>
 
         <div class="button-container">
-            <button class="reactive-button update">수정하기</button>
+            <button class="reactive-button update" onclick="postNewGroupInfo()">수정하기</button>
             <button class="reactive-button delete">모임 삭제</button>
         </div>
     </div>
@@ -110,6 +111,18 @@
             document.querySelector('input[name="endtime"]').value = fetchedEndTime;
             document.querySelector('.voteendtime input').value = fetchedVoteEnd;
             document.querySelector('.percentage input').value = fetchedVotePercent;
+
+            const groupMembersContainer = document.getElementById('group-members');
+            groupMembersContainer.innerHTML = '';
+            fetchedMembers.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'flexbox userbox';
+                userDiv.innerHTML = `
+                    <span>${user}</span>
+                    <button class="reactive-button kick" style="display: none;">강퇴</button>
+                `;
+                groupMembersContainer.appendChild(userDiv);
+            });
         }
 
         async function postNewGroupInfo() {
@@ -129,24 +142,23 @@
             const voteEndTime = document.querySelector('.voteendtime input').value;
             const percentage = document.querySelector('.percentage input').value;
 
-            const groupInfo = {
-                "className": groupName,
-                "manager": email,
-                "classDescription": description,
-                "classImage": null,
-                "classCode": classCode,
-                "classDate": days,
-                "classStartTime": startTime,
-                "classEndTime": endTime,
-                "voteEnd": voteEndTime,
-                "votePercent": percentage,
-                "penaltyType": 1
-            }
+            const formData = new FormData();
+            formData.append('className', groupName);
+            formData.append('manager', email);
+            formData.append('classDescription', description);
+            formData.append('classImage', groupImage);
+            formData.append('classCode', classCode);
+            formData.append('classDate', days);
+            formData.append('classStartTime', startTime);
+            formData.append('classEndTime', endTime);
+            formData.append('voteEnd', voteEndTime);
+            formData.append('votePercent', percentage);
+            formData.append('penaltyType', 1);
 
             const createResponse = fetchWithToken('/class/create-class', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data'
                 },
                 body: JSON.stringify(groupInfo)
             });
@@ -156,6 +168,37 @@
                 alert('모임 정보 수정에 실패했습니다. 다시 시도해주세요.');
             } else {
                 window.location.reload();
+            }
+        }
+
+        function copyToClipboard() {
+            const inviteCode = document.getElementById('invite-code').innerText;
+            navigator.clipboard.writeText(inviteCode).then(() => {
+                alert('초대 코드가 복사되었습니다.');
+            }
+            ).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function disableInputsIfNotManager() {
+            const currentGroupId = sessionStorage.getItem('currentClassId');
+            const response = fetchWithToken('/class/' + currentGroupId);
+            const data = response.json();
+
+            const userResponse = fetchWithToken('/user/info');
+            const userEmail = userResponse.json().email;
+
+            if (data.manager != userEmail) {
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.style.display = 'none';
+                });
             }
         }
 

@@ -42,10 +42,20 @@
             try {
                 const response = await fetchWithToken('/user/info');
                 const data = await response.json();
-                document.getElementById('user-name').innerText = data.username;
+                document.getElementById('user-name').innerText = data.userName;
                 document.getElementById('user-email').innerText = data.email;
-
-                // Put image here
+                document.getElementById('user-icon').src = data.userImage;
+                
+                /*
+                const imageByteString = data.userImage;
+                const binaryString = new Uint8Array(imageByteString.length);
+                for (let i = 0; i < imageByteString.length; i++) {
+                    binaryString[i] = imageByteString.charCodeAt(i);
+                }
+                const blob = new Blob([binaryString], { type: 'image/*' });
+                const imageUrl = URL.createObjectURL(blob);
+                const userIcon = document.getElementById('user-icon');
+                userIcon.src = imageUrl;
 
                 const groupsInfoResponse = await fetch('/class/' + data.email);
                 if (!groupsInfoResponse.ok) {
@@ -65,6 +75,22 @@
                     `;
                     groupList.appendChild(groupDiv);
                 });
+                */
+
+                const groupList = data.userClass;
+                const groupListContainer = document.querySelector('.group-list');
+                groupListContainer.innerHTML = '';
+                groupList.forEach(group => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'group';
+                    groupDiv.innerHTML = `
+                        <span class="groupName">${group.className}</span>
+                        <button class="reactive-button" type="button" onclick="setCurrentGroup(${group.classId})">정보</button>
+                        <button class="button" type="button" onclick="leaveGroup(${group.classId})">탈퇴</button>
+                    `;
+                    groupListContainer.appendChild(groupDiv);
+                });
+
             } catch (error) {
                 console.error("Error fetching user info: ", error);
             }
@@ -93,6 +119,11 @@
             });
 
             fetchUserInfo();
+        }
+    
+        function setCurrentGroup(classId) {
+            sessionStorage.setItem('currentGroup', classId);
+            window.location.href = '/main';
         }
     </script>
 </body>
