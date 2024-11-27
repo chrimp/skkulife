@@ -83,7 +83,7 @@
                 saturday: 5,
                 sunday: 6
             };
-            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value]);
+            const days = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(checkbox => dayMap[checkbox.value].toString());
 
             const startTime = document.getElementsByName('starttime')[0].value;
             const endTime = document.getElementsByName('endtime')[0].value;
@@ -98,14 +98,14 @@
             formData.append('classDescription', description);
             formData.append('classImage', groupImage);
             formData.append('classCode', classCode);
-            formData.append('classDate', days);
+            formData.append('classDate', JSON.stringify(days));
             formData.append('classStartTime', startTime);
             formData.append('classEndTime', endTime);
             formData.append('voteEnd', voteEndTime);
             formData.append('votePercent', percentage);
             formData.append('penaltyType', 1);
 
-            const createResponse = fetchWithToken('/class/create-class', {
+            const createResponse = await fetchWithToken('/class/create-class', {
                 method: 'POST',
                 header: {
                     'Content-Type': 'multipart/form-data'
@@ -117,6 +117,9 @@
                 console.error('Error creating group', createResponse.status, createResponse.statusText);
                 alert('모임 생성에 실패했습니다. 다시 시도해주세요.');
             } else {
+                const groupData = await createResponse.json();
+                const classId = groupData.classId;
+                sessionStorage.setItem('currentGroup', classId);
                 window.location.href = '/main'; // !! Add group id
             }
         }

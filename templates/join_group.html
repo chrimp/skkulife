@@ -15,7 +15,7 @@
     <div class="wrapper">
         <div class="container">
             <form id="join-group-form">
-                <input type="text" name="classId" placeholder="초대 코드"></input>
+                <input type="text" name="classCode" placeholder="초대 코드"></input>
                 <button type="submit">모임 참여하기</button>
             </form>
         </div>
@@ -43,7 +43,7 @@
                 jsonData[key] = value;
             });
 
-            const response = await fetchWithToken('/group/join', {
+            const response = await fetchWithToken('/class/join-class', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
