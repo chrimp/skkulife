@@ -152,8 +152,13 @@ def render_template_file(filename):
 def group_info():
     return render_template('group-info.html')
 
+@app.route('/sw.js')
+def service_worker():
+    return send_from_directory('.', 'sw.js')
+
 @app.route('/html/<path:filename>')
 def resolve_html_path(filename):
+    if "sw.js" in filename: print("Service worker requested in HTML resolver!")
     return redirect(f'/{filename}', code=301)
 
 @app.route('/<path:path>')

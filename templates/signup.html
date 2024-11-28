@@ -46,11 +46,48 @@
     </div>
 
     <script>
+        async function setImageIfEmpty() {
+            try {
+                const response = await fetch('/html/static/images/default-profile-image.svg');
+                const blob = await response.blob();
+
+                const img = new Image();
+                const imageUrl = URL.createObjectURL(blob);
+
+                return new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 500;
+                        canvas.height = 500;
+                        const ctx = canvas.getContext('2d');
+
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        canvas.toBlob(blob => {
+                            resolve(new File([blob], 'default-profile-image.jpg', { type: 'image/jpeg'}));
+                        }, 'image/jpeg', 0.9);
+                    };
+                    img.onerror = reject;
+                    img.src = imageUrl;
+                });
+            } catch (error) {
+                console.error('Error fetching default profile image:', error);
+                throw error;
+            }
+        }
+
         const form = document.getElementById('signup-form');
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
             const formData = new FormData(form);
             formData.delete('password-confirm');
+
+            if (!formData.get('profile').size) {
+                const defaultImage = await setImageIfEmpty();
+                formData.set('profile', defaultImage);
+            }
     
             const response = await fetch(form.action, {
                 method: form.method,

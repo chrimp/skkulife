@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Info</title>
+    <title>모임 정보</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/group-info.css">
     <script src="/html/static/scripts/imageCropper.js"></script>
-    <script src="/html/static/scripts/api.js" defer></script>
+    <script src="/html/static/scripts/api.js"></script>
 </head>
 <body>
     <h2 class="banner">SKKULIFE</h2>
@@ -281,6 +281,16 @@
                 },
                 body: JSON.stringify(body)
             });
+
+            if (deleteResponse.ok) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'CLEAR_GROUP_DATA'
+                });
+                window.location.href = '/info';
+            } else {
+                console.error('Error deleting group', deleteResponse.status, deleteResponse.statusText);
+                alert('모임 삭제중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
     </script>
 </body>

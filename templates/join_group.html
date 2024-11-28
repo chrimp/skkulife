@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signup</title>
+    <title>모임 참여하기</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/join_group.css">
     <script src="/html/static/scripts/api.js"></script>
@@ -29,13 +29,29 @@
             <span>로그아웃</span>
         </div>
     </div>
-
     <script>
         document.getElementsByClassName('logout')[0].addEventListener('click', function() {
             sessionStorage.removeItem('token');
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CLEAR_USER_DATA'
+            });
             window.location.href = '/';
         });
 
+        async function updateUserBanner() {
+            try {
+                const response = await fetchWithToken('/user/info');
+                const data = await response.json();
+                if (data) {
+                    document.getElementById('small-user-icon').src = data.userImage;
+                    document.getElementById('card-user-icon').src = data.userImage;
+                    document.querySelector('.user-info div').innerText = data.userName;
+                } else return;
+            } catch (error) {
+                console.error("Error updating user banner: ", error);
+            }
+        }
+        updateUserBanner();
         function toggleUserCard() {
             const userCard = document.querySelector('.user-card');
             
@@ -54,19 +70,6 @@
                 userCard.style.display = 'none';
             }
         });
-
-        async function fetchUserInfo() {
-            try {
-                const response = await fetchWithToken('/user/info');
-                const data = await response.json();
-                document.getElementById('small-user-icon').src = data.userImage;
-                document.getElementById('card-user-icon').src = data.userImage;
-                document.querySelector('.user-info div').innerText = data.userName;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchUserInfo();
     </script>
     <h2 class="banner">SKKULIFE</h2>
     <div class="wrapper">

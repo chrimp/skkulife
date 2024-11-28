@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Group</title>
+    <title>그룹 만들기</title>
     <link rel="stylesheet" href="/html/static/css/style.css">
     <link rel="stylesheet" href="/html/static/css/group-info.css">
     <script src="/html/static/scripts/imageCropper.js"></script>
@@ -30,13 +30,29 @@
             <span>로그아웃</span>
         </div>
     </div>
-
     <script>
         document.getElementsByClassName('logout')[0].addEventListener('click', function() {
             sessionStorage.removeItem('token');
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CLEAR_USER_DATA'
+            });
             window.location.href = '/';
         });
 
+        async function updateUserBanner() {
+            try {
+                const response = await fetchWithToken('/user/info');
+                const data = await response.json();
+                if (data) {
+                    document.getElementById('small-user-icon').src = data.userImage;
+                    document.getElementById('card-user-icon').src = data.userImage;
+                    document.querySelector('.user-info div').innerText = data.userName;
+                } else return;
+            } catch (error) {
+                console.error("Error updating user banner: ", error);
+            }
+        }
+        updateUserBanner();
         function toggleUserCard() {
             const userCard = document.querySelector('.user-card');
             
@@ -55,19 +71,6 @@
                 userCard.style.display = 'none';
             }
         });
-
-        async function fetchUserInfo() {
-            try {
-                const response = await fetchWithToken('/user/info');
-                const data = await response.json();
-                document.getElementById('small-user-icon').src = data.userImage;
-                document.getElementById('card-user-icon').src = data.userImage;
-                document.querySelector('.user-info div').innerText = data.userName;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchUserInfo();
     </script>
     <h2 class="banner">SKKULIFE</h2>
     <div class="wrapper">
@@ -122,10 +125,48 @@
     </div>
 
     <script>
+        async function setImageIfEmpty() {
+            try {
+                const response = await fetch('/html/static/images/default-group-image.svg');
+                const blob = await response.blob();
+
+                const img = new Image();
+                const imageUrl = URL.createObjectURL(blob);
+
+                return new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 500;
+                        canvas.height = 500;
+                        const ctx = canvas.getContext('2d');
+
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        canvas.toBlob(blob => {
+                            resolve(new File([blob], 'default-group-image.jpg', { type: 'image/jpeg' }));
+                        }, 'image/jpeg', 0.9);
+
+                        URL.revokeObjectURL(imageUrl);
+                    };
+                    img.onerror = reject;
+                    img.src = imageUrl;
+                });
+            } catch (error) {
+                console.error('Error creating default group image:', error);
+                throw error;
+            }
+        }
+
         async function postNewGroupInfo() {
             const groupName = document.getElementsByClassName('groupName')[0].value;
             const description = document.getElementsByName('description')[0].value;
-            const groupImage = document.getElementsByName('group-image')[0].files[0];
+            let groupImage = document.getElementsByName('group-image')[0].files[0];
+
+            if (!groupImage) {
+                groupImage = await setImageIfEmpty();
+            }
             
             // Fetch User Info for email
             const response = await fetchWithToken('/user/info');
