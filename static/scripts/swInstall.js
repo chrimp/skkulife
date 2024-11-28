@@ -7,7 +7,7 @@ if ('serviceWorker' in navigator) {
                 return;
             }
 
-            const registration = await navigator.serviceWorker.register('sw.js', {
+            const registration = await navigator.serviceWorker.register('./sw.js', {
                 scope: '/'
             });
             console.log('Service worker registered with scope:', registration.scope);
