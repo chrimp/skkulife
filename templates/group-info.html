@@ -284,7 +284,7 @@
 
             if (deleteResponse.ok) {
                 navigator.serviceWorker.controller.postMessage({
-                    type: 'CLEAR_GROUP_DATA'
+                    type: 'CLEAR_USER_DATA'
                 });
                 window.location.href = '/info';
             } else {
