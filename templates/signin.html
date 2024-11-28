@@ -25,10 +25,8 @@
         </div>
     </div>
 
-    <script type="module">
-        import UserDataManager from '/html/static/scripts/userDataManager.js';
-
-        document.getElementById('login-form').addEventListener('submit', async function(event) {
+    <script>
+            document.getElementById('login-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
             const jsonData = {};
@@ -60,18 +58,6 @@
                 alert('아이디와 비밀번호를 확인해주세요.');
             }
         })
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = sessionStorage.getItem('token');
-            if (token !== null) {
-                UserDataManager.getUserData(true)
-                .then(data => {
-                    window.location.href = '/info';
-                }).catch(error => {
-                    console.error("Error fetching user data after logging in:", error);
-                });
-            }
-        });
     </script>
 </body>
 </html>

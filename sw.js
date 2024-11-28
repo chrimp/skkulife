@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'skkulife-v1';
+const CACHE_NAME = 'skkulife';
 const ASSETS = [
     '/', // Cache root
     '/html/static/css/style.css',
@@ -14,6 +14,12 @@ self.addEventListener('message', event => {
     if (event.data.type === 'CLEAR_USER_DATA') {
         caches.open(CACHE_NAME).then(cache => {
             cache.delete(new Request('/dev/user/info'));
+        });
+    }
+
+    if (event.data.type === 'CLEAR_ALL') {
+        caches.keys().then(keys => {
+            keys.forEach(key => caches.delete(key));
         });
     }
 });
