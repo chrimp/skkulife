@@ -6,6 +6,10 @@ if ('serviceWorker' in navigator) {
 
             if (existing) {
                 if (!hasToken) {
+                    if (existing.active) {
+                        existing.active.postMessage({ type: 'CLEAR_ALL' });
+                        await existing.update();
+                    }
                     await existing.unregister();
                     console.log('Service worker unregistered');
                 } else {

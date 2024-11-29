@@ -4,9 +4,26 @@ const ASSETS = [
     '/', // Cache root
     '/html/static/css/style.css',
     '/html/static/css/signin.css',
+    '/html/static/css/group-info.css',
+    '/html/static/css/group-intro.css',
+    '/html/static/css/info.css',
+    '/html/static/css/join_group.css',
+    '/html/static/css/signup.css',
+    '/html/static/css/user-banner.css',
     '/html/static/scripts/api.js',
+    '/html/static/scripts/imageCropper.js',
+    '/html/static/scripts/signup.js',
+    '/html/static/scripts/userBanner.js',
     '/html/static/images/default-profile-image.svg',
-    '/html/static/images/default-group-image.svg'
+    '/html/static/images/default-group-image.svg',
+    '/html/templates/create-group.html',
+    '/html/templates/email-verification.html',
+    '/html/templates/group-info.html',
+    '/html/templates/group-intro.html',
+    '/html/templates/info.html',
+    '/html/templates/join_group.html',
+    '/html/templates/signup.html',
+    '/html/templates/user-banner.html'
 ];
 
 // Message handler - clear cache
