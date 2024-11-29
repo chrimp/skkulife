@@ -1,4 +1,4 @@
-export async function fetchWithToken(input, init={}) {
+async function fetchWithToken(input, init={}) {
     const token = sessionStorage.getItem('token');
 
     const BASEURL = 'https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev';
