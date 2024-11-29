@@ -213,7 +213,7 @@
                 console.error('Error creating group', createResponse.status, createResponse.statusText);
                 alert('모임 정보 수정에 실패했습니다. 다시 시도해주세요.');
             } else {
-                fetchWithToken('/class/' + sessionStorage.getItem('currentGroup'), {
+                await fetchWithToken('/class/' + sessionStorage.getItem('currentGroup'), {
                     method: 'GET',
                     headers: {
                         'X-Use-Network': 'true'

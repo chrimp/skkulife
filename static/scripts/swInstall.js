@@ -14,7 +14,7 @@ if ('serviceWorker' in navigator) {
                     await existing.unregister();
                     console.log('Service worker unregistered');
                 } else {
-                    if (isControlling) {
+                    if (!isControlling) {
                         const registration = await navigator.serviceWorker.register('./sw.js', {
                             scope: '/'
                         });
