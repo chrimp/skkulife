@@ -147,7 +147,15 @@ button {
 .button-container button {
     width: calc((max(30vw, 400px) * 0.7) / 2);
 }
-.button-container .update:hover {
+.button-container .update:disabled {
+    background-color: #ccc;
+    color: rgb(85, 85, 85);
+}
+.button-container .update:disabled:hover {
+    background-color: #ccc;
+    color: rgb(85, 85, 85);
+}
+.button-container .update:not(:disabled):hover {
     background-color: #42802D;
 }
 .button-container .delete:hover {

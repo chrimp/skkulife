@@ -126,12 +126,7 @@
                 })
             });
 
-            fetchWithToken('/user/info', {
-                method: 'GET',
-                headers: {
-                    'X-Use-Network': 'true'
-                }
-            })
+            navigator.serviceWorker.controller.postMessage({ 'type': 'CLEAR_USER_DATA' });
             updateContainer();
         }
     

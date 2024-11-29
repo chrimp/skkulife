@@ -72,6 +72,9 @@
             });
 
             if (response.ok) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'CLEAR_USER_DATA'
+                });
                 window.location.href = '/info';
             } else {
                 alert('초대 코드가 올바르지 않습니다.');

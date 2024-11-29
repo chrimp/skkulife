@@ -30,7 +30,7 @@ const ASSETS = [
 self.addEventListener('message', event => {
     if (event.data.type === 'CLEAR_USER_DATA') {
         caches.open(CACHE_NAME).then(cache => {
-            cache.delete(new Request('/dev/user/info'));
+            cache.delete(new Request('https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev/user/info'));
         });
     }
 
