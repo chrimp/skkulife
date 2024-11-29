@@ -1,18 +1,30 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', async() => {
         try {
-            // Check if SW is already registered
-            const existing = await navigator.serviceWorker.getRegistration();
+            const existing = await navigator.serviceWorker.getRegistration('/');
+            const hasToken = sessionStorage.getItem('token');
+
             if (existing) {
-                return;
+                if (!hasToken) {
+                    await existing.unregister();
+                    console.log('Service worker unregistered');
+                } else {
+                    console.log('Service worker already registered');
+                    return;
+                };
             }
 
-            const registration = await navigator.serviceWorker.register('./sw.js', {
-                scope: '/'
-            });
-            console.log('Service worker registered with scope:', registration.scope);
+            if (!existing || !hasToken) {
+                const registration = await navigator.serviceWorker.register('./sw.js', {
+                    scope: '/'
+                });
+                console.log('Service worker registered');
+                return;
+            }
         } catch (error) {
             console.error('Service worker registration failed:', error);
         }
+
+        console.warn('swInstall.js did not execute anything');
     });
 }
