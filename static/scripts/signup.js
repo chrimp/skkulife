@@ -33,7 +33,8 @@ function validateEmail(email) {
     email = String(email).toLowerCase();
     const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const domain = email.split('@')[1];
-    test = email.match(re) || (domain == 'g.skku.edu');
+    let domainTest = (domain == 'skku.edu') || (domain == 'g.skku.edu');
+    test = email.match(re) && domainTest;
     return test;
 }
 
