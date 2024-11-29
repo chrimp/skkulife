@@ -3,6 +3,7 @@ if ('serviceWorker' in navigator) {
         try {
             const existing = await navigator.serviceWorker.getRegistration('/');
             const hasToken = sessionStorage.getItem('token');
+            const isControlling = navigator.serviceWorker.controller;
 
             if (existing) {
                 if (!hasToken) {
@@ -13,11 +14,12 @@ if ('serviceWorker' in navigator) {
                     await existing.unregister();
                     console.log('Service worker unregistered');
                 } else {
-                    await existing.unregister();
-                    const registration = await navigator.serviceWorker.register('./sw.js', {
-                        scope: '/'
-                    });
-                    console.log('Service worker re-registered');
+                    if (isControlling) {
+                        const registration = await navigator.serviceWorker.register('./sw.js', {
+                            scope: '/'
+                        });
+                        console.log('Service worker re-registered');
+                    }
                     return;
                 };
             }
