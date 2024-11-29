@@ -45,24 +45,34 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Fetch handler - network first with cache fallback
+// Fetch handler - cache first with network fallback
 self.addEventListener('fetch', event => {
     const { request } = event;
 
-    // Skip non-GET requests
     if (request.method !== 'GET') {
         return;
     }
-    // API calls - network first with cache fallback
+
     event.respondWith(
-        fetch(request)
-            .then(response => {
-                const responseClone = response.clone();
-                caches.open(CACHE_NAME)
-                    .then(cache => cache.put(request, responseClone));
-                return response;
+        caches.match(request)
+            .then(cached => {
+                if (cached) {
+                    // Cache hit - return cached response
+                    return cached;
+                }
+                
+                // Cache miss - fetch from network
+                return fetch(request)
+                    .then(response => {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.put(request, responseClone));
+                        return response;
+                    })
+                    .catch(() => {
+                        console.log('Network request failed, no cache available');
+                        return new Response('Network error occurred');
+                    });
             })
-            .catch(() => caches.match(request))
     );
-    return;
 });
