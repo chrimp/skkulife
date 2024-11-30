@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/html/static/css/group-info.css">
     <script src="/html/static/scripts/imageCropper.js"></script>
     <script src="/html/static/scripts/api.js"></script>
+    <script src="/html/static/scripts/swInstall.js" async></script>
 </head>
 <body>
     <link rel="stylesheet" href="/html/static/css/user-banner.css">
@@ -180,9 +181,34 @@
                 const groupData = await createResponse.json();
                 const classId = groupData.classId;
                 sessionStorage.setItem('currentGroup', classId);
+                fetchWithToken('/class/' + classId); // Aggresive caching
+                navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_USER_DATA' });
                 window.location.href = '/main';
             }
         }
+
+        function checkFormValidity() {
+            const groupName = document.getElementsByClassName('groupName')[0].value;
+            const description = document.getElementsByName('description')[0].value;
+            const days = Array.from(document.querySelectorAll('input[name="day"]:checked'));
+            const startTime = document.getElementsByName('starttime')[0].value;
+            const endTime = document.getElementsByName('endtime')[0].value;
+            const voteEndTime = document.querySelector('.voteendtime input').value;
+            const percentage = document.querySelector('.percentage input').value;
+
+            const isFormValid = groupName && description && (days.length > 0) && startTime && endTime && voteEndTime && percentage;
+            document.getElementsByClassName('update')[0].disabled = !isFormValid;
+        }
+
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', checkFormValidity);
+        });
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', checkFormValidity);
+        });
+
+        checkFormValidity();
     
         const image = document.getElementById('profile-image');
         const fileInput = document.querySelector('input[type="file"]');

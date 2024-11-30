@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/html/static/css/group-info.css">
     <script src="/html/static/scripts/imageCropper.js"></script>
     <script src="/html/static/scripts/api.js"></script>
+    <script src="/html/static/scripts/swInstall.js" async></script>
 </head>
 <body>
     <h2 class="banner">SKKULIFE</h2>
@@ -212,6 +213,12 @@
                 console.error('Error creating group', createResponse.status, createResponse.statusText);
                 alert('모임 정보 수정에 실패했습니다. 다시 시도해주세요.');
             } else {
+                await fetchWithToken('/class/' + sessionStorage.getItem('currentGroup'), {
+                    method: 'GET',
+                    headers: {
+                        'X-Use-Network': 'true'
+                    }
+                });
                 window.location.reload();
             }
         }
