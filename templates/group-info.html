@@ -87,6 +87,8 @@
     </div>
 
     <script>
+        let initialForm = null;
+
         async function fetchGroupInfo() {
             var classId = sessionStorage.getItem('currentGroup');
             if (classId === null) {
@@ -157,6 +159,17 @@
             });
 
             await disableInputsIfNotManager(data);
+
+            initialForm = {
+                groupName: document.getElementsByClassName('groupName')[0].value,
+                description: document.getElementsByName('description')[0].value,
+                days: Array.from(document.querySelectorAll('input[name="day"]:checked')).map(cb => cb.value),
+                startTime: document.getElementsByName('starttime')[0].value,
+                endTime: document.getElementsByName('endtime')[0].value,
+                voteEndTime: document.querySelector('.voteendtime input').value,
+                percentage: document.querySelector('.percentage input').value,
+                imageFile: document.querySelector('input[type="file"]').files[0]
+            };
         }
 
         async function postNewGroupInfo() {
@@ -228,6 +241,17 @@
         }
 
         function checkFormValidity() {
+            const currentForm = {
+                groupName: document.getElementsByClassName('groupName')[0].value,
+                description: document.getElementsByName('description')[0].value,
+                days: Array.from(document.querySelectorAll('input[name="day"]:checked')).map(cb => cb.value),
+                startTime: document.getElementsByName('starttime')[0].value,
+                endTime: document.getElementsByName('endtime')[0].value,
+                voteEndTime: document.querySelector('.voteendtime input').value,
+                percentage: document.querySelector('.percentage input').value,
+                imageFile: document.querySelector('input[type="file"]').files[0]
+            };
+
             const groupName = document.getElementsByClassName('groupName')[0].value;
             const description = document.getElementsByName('description')[0].value;
             const days = Array.from(document.querySelectorAll('input[name="day"]:checked'));
@@ -237,7 +261,10 @@
             const percentage = document.querySelector('.percentage input').value;
 
             const isFormValid = groupName && description && (days.length > 0) && startTime && endTime && voteEndTime && percentage && (startTime != endTime);
-            document.getElementsByClassName('update')[0].disabled = !isFormValid;
+            const isModified = JSON.stringify({...currentForm, imageFile: undefined}) !== 
+                                JSON.stringify({...initialForm, imageFile: undefined}) ||
+                                currentForm.imageFile !== initialForm.imageFile;
+            document.getElementsByClassName('update')[0].disabled = !isFormValid || !isModified;
         }
 
         document.querySelectorAll('input, textarea').forEach(input => {
@@ -247,8 +274,6 @@
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', checkFormValidity);
         });
-
-        checkFormValidity();
 
         function copyToClipboard() {
             const inviteCodeClass = document.getElementsByClassName('invitecode')[0];
@@ -284,6 +309,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', fetchGroupInfo);
+        checkFormValidity();
 
         const image = document.getElementById('class-image');
         image.addEventListener('click', () => {
