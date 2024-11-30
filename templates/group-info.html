@@ -194,9 +194,13 @@
             formData.append('classImage', groupImage);
             formData.append('classCode', classCode);
             
-            days.forEach(day => {
-                formData.append('classDate', day);
-            });
+            if (days.length === 1) {
+                formData.append('classDate[]', days[0]);
+            } else {
+                days.forEach(day => {
+                    formData.append('classDate', day);
+                });
+            }
 
             formData.append('classStartTime', startTime);
             formData.append('classEndTime', endTime);
@@ -221,6 +225,19 @@
                 });
                 window.location.reload();
             }
+        }
+
+        function checkFormValidity() {
+            const groupName = document.getElementsByClassName('groupName')[0].value;
+            const description = document.getElementsByName('description')[0].value;
+            const days = Array.from(document.querySelectorAll('input[name="day"]:checked'));
+            const startTime = document.getElementsByName('starttime')[0].value;
+            const endTime = document.getElementsByName('endtime')[0].value;
+            const voteEndTime = document.querySelector('.voteendtime input').value;
+            const percentage = document.querySelector('.percentage input').value;
+
+            const isFormValid = groupName && description && (days.length > 0) && startTime && endTime && voteEndTime && percentage && (startTime != endTime);
+            document.getElementsByClassName('update')[0].disabled = !isFormValid;
         }
 
         function copyToClipboard() {
