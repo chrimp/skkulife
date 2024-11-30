@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, abort
 import os
 
-app = Flask(__name__, static_folder='build')
+app = Flask(__name__, static_folder='./')
 
 # Serve the signin.html for the root route
 @app.route('/')
