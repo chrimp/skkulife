@@ -34,6 +34,20 @@ self.addEventListener('message', event => {
         });
     }
 
+    if (event.data.type === 'CLEAR_ALL_INFO') {
+        caches.open(CACHE_NAME).then(cache => {
+            cache.keys().then(requests => {
+                const apiRequests = requests.filter(request =>
+                    request.url.startsWith('https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev')
+                );
+                Promise.all(apiRequests.map(request => {
+                    cache.delete(request)
+                    console.log('Deleted:', request.url);
+            }));
+            });
+        });
+    }
+
     if (event.data.type === 'CLEAR_ALL') {
         caches.keys().then(keys => {
             keys.forEach(key => caches.delete(key));
