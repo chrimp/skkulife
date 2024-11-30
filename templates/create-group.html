@@ -182,7 +182,15 @@
                 const classId = groupData.classId;
                 sessionStorage.setItem('currentGroup', classId);
                 fetchWithToken('/class/' + classId); // Aggresive caching
-                navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_USER_DATA' });
+                try { navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_USER_DATA' }); }
+                catch (error) {
+                    if (error.name === 'TypeError') {
+                        console.warn('Service Worker is not available.'); // Allow web to continue; SW error is not critical
+                    } else {
+                        console.error('Service Worker error:', error);
+                    }
+                }
+                
                 window.location.href = '/main';
             }
         }
