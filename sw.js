@@ -49,17 +49,9 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activate handler - clean up old caches
+// Activate handler - claim clients
 self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(keys => Promise.all(
-            keys.map(key => {
-                if (key !== CACHE_NAME) {
-                    return caches.delete(key);
-                }
-            })
-        ))
-    );
+    event.waitUntil(clients.claim());
 });
 
 // Fetch handler - cache first with network fallback
