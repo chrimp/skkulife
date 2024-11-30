@@ -51,9 +51,17 @@
                 });
 
                 if (response.ok) {
-                    navigator.serviceWorker.controller.postMessage({
-                        type: 'CLEAR_USER_DATA'
-                    });
+                    try {
+                        navigator.serviceWorker.controller.postMessage({
+                            type: 'CLEAR_USER_DATA'
+                        });
+                    } catch (error) {
+                        if (error.name === 'TypeError') {
+                            console.warn('Service Worker is not available.'); // Allow web to continue; SW error is not critical
+                        } else {
+                            console.error('Service Worker error:', error);
+                        }
+                    }
                     window.location.href = '/info';
                 } else {
                     alert('인증 코드가 올바르지 않습니다.');

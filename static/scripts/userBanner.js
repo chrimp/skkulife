@@ -1,8 +1,16 @@
 document.getElementsByClassName('logout')[0].addEventListener('click', function() {
     sessionStorage.removeItem('token');
-    navigator.serviceWorker.controller.postMessage({
-        type: 'CLEAR_USER_DATA'
-    });
+    try {
+        navigator.serviceWorker.controller.postMessage({
+            type: 'CLEAR_USER_DATA'
+        });
+    } catch (error) {
+        if (error.name === 'TypeError') {
+            console.error("Service worker not found: ", error); // Allow web to continue; SW error is not critical
+        } else {
+            console.error("Error logging out: ", error);
+        } 
+    }
     window.location.href = '/';
 });
 
