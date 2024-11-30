@@ -240,6 +240,16 @@
             document.getElementsByClassName('update')[0].disabled = !isFormValid;
         }
 
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', checkFormValidity);
+        });
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', checkFormValidity);
+        });
+
+        checkFormValidity();
+
         function copyToClipboard() {
             const inviteCodeClass = document.getElementsByClassName('invitecode')[0];
             const inviteSpan = inviteCodeClass.querySelector('span').innerText;
