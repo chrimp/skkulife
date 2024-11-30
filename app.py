@@ -1,13 +1,11 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, session
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_cors import CORS
 import os
 from dataclasses import dataclass
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'SuPeRsEcReTkEy'
 jwt = JWTManager(app)
-CORS(app)
 
 @dataclass
 class USER_CREDENTIAL:

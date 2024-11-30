@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>signup</title>
-    <link rel="stylesheet" href="/html/static/css/style.css">
-    <link rel="stylesheet" href="/html/static/css/signup.css">
-    <script src="/html/static/scripts/imageCropper.js"></script>
-    <script src="/html/static/scripts/signup.js" defer></script>
-    <script src="/html/static/scripts/swInstall.js" async></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/signup.css">
+    <script src="/static/scripts/imageCropper.js"></script>
+    <script src="/static/scripts/signup.js" defer></script>
+    <script src="/static/scripts/swInstall.js" async></script>
 </head>
 <body>
     <h2 class="banner">SKKULIFE</h2>
@@ -17,7 +17,7 @@
             <h2>회원가입</h2>
             <form id="signup-form" action="https://nsptbxlxoj.execute-api.ap-northeast-2.amazonaws.com/dev/auth/signup" method="POST">
                 <div class="profile-image-container">
-                    <img src="/html/static/images/default-profile-image.svg" id="profile-image" alt="프로필 이미지" class="image">
+                    <img src="/static/images/default-profile-image.svg" id="profile-image" alt="프로필 이미지" class="image">
                     <input type="file" name="profile" accept="image/jpeg, image/png, image/jpg" style="display: none;">
                 </div>
                 <input type="text" name="name" placeholder="이름" required>
@@ -49,7 +49,7 @@
     <script>
         async function setImageIfEmpty() {
             try {
-                const response = await fetch('/html/static/images/default-profile-image.svg');
+                const response = await fetch('/static/images/default-profile-image.svg');
                 const blob = await response.blob();
 
                 const img = new Image();

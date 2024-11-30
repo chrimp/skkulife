@@ -2,28 +2,30 @@
 const CACHE_NAME = 'skkulife';
 const ASSETS = [
     '/', // Cache root
-    '/html/static/css/style.css',
-    '/html/static/css/signin.css',
-    '/html/static/css/group-info.css',
-    '/html/static/css/group-intro.css',
-    '/html/static/css/info.css',
-    '/html/static/css/join_group.css',
-    '/html/static/css/signup.css',
-    '/html/static/css/user-banner.css',
-    '/html/static/scripts/api.js',
-    '/html/static/scripts/imageCropper.js',
-    '/html/static/scripts/signup.js',
-    '/html/static/scripts/userBanner.js',
-    '/html/static/images/default-profile-image.svg',
-    '/html/static/images/default-group-image.svg',
-    '/html/templates/create-group.html',
-    '/html/templates/email-verification.html',
-    '/html/templates/group-info.html',
-    '/html/templates/group-intro.html',
-    '/html/templates/info.html',
-    '/html/templates/join_group.html',
-    '/html/templates/signup.html',
-    '/html/templates/user-banner.html'
+    '/static/css/style.css',
+    '/static/css/signin.css',
+    '/static/css/group-info.css',
+    '/static/css/group-intro.css',
+    '/static/css/info.css',
+    '/static/css/join_group.css',
+    '/static/css/signup.css',
+    '/static/css/user-banner.css',
+    '/static/scripts/api.js',
+    '/static/scripts/imageCropper.js',
+    '/static/scripts/signup.js',
+    '/static/scripts/userBanner.js',
+    '/static/images/default-profile-image.svg',
+    '/static/images/default-group-image.svg',
+    '/templates/create-group.html',
+    '/templates/email-verification.html',
+    '/templates/group-info.html',
+    '/templates/group-intro.html',
+    '/templates/info.html',
+    '/templates/join_group.html',
+    '/templates/signup.html',
+    //'/assets/index-DOY99I29.js',
+    //'/assets/index-DzFN2MWC.css',
+    //'/index.html'
 ];
 
 // Message handler - clear cache
@@ -60,6 +62,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(ASSETS))
+            .then(() => self.skipWaiting())
     );
 });
 
